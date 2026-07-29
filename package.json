@@ -10,6 +10,7 @@
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write src/**/*.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -21,9 +22,13 @@
     }
   },
   "dependencies": {
+    "@mikro-orm/core": "7.1.7",
+    "@mikro-orm/mysql": "7.1.7",
+    "@mikro-orm/sql-highlighter": "1.0.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
     "multer": "^2.2.0",
+    "reflect-metadata": "0.2.2",
     "sharp": "^0.34.2",
     "uuid": "^11.1.0"
   },

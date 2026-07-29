@@ -1,4 +1,5 @@
 node_modules/
 dist/
+varios/
 .env
 .vscode/settings.json
