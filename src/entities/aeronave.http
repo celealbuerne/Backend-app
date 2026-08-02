@@ -1,0 +1,37 @@
+### GET ALL
+GET http://localhost:3000/api/aeronaves
+
+### SAVE
+POST http://localhost:3000/api/aeronaves
+Content-Type: application/json
+
+{
+  "modelo": "salusa secundus",
+  "fabricante": "yo",
+  "descripcion": "johogwobhwh",
+  "capacidad": 1,
+  "autonomia": 5765,
+  "velocidadMaxima": 2853,
+  "antiguedad": "2018-05-15T00:00:00.000Z",
+  "miProveedor": 1
+}
+
+###ID
+@id = 7
+
+### GET ONE
+GET http://localhost:3000/api/aeronaves/{{id}}
+
+### UPDATE
+PUT http://localhost:3000/api/aeronaves/{{id}}
+Content-Type: application/json
+
+{
+  "descripcion": "ses",
+  "capacidad": 1,
+  "autonomia": 105,
+  "velocidadMaxima": 10
+}
+
+### DELETE
+DELETE http://localhost:3000/api/aeronaves/{{id}}

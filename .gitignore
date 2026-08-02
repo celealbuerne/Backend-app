@@ -1,5 +1,10 @@
 node_modules/
 dist/
-varios/
+varios
+temp
 .env
 .vscode/settings.json
+*.vsix
+.history/
+.DS_Store
+Thumbs.db
