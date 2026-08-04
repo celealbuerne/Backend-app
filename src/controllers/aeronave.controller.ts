@@ -1,10 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { orm } from '../shared/orm.js';
-import { Aeronave } from '../models/aeronave.entity.js';
-import { Usuario } from '../models/usuario.entity.js';
 import { NotFoundIDError } from '../errors/notFound.error.js';
-import { BadRequestError } from '../errors/badRequest.error.js';
+import { AeronaveService } from '../services/aeronave.service.js';
 
+const s = new AeronaveService();
 // const em = orm.em;
 export class AeronaveController {
   sanitizeInput = (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +17,7 @@ export class AeronaveController {
       miProveedor,
     } = req.body;
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sanitizedInput: Record<string, any> = {
       modelo: modelo ? String(modelo).trim() : undefined,
       fabricante: fabricante ? String(fabricante).trim() : undefined,
@@ -50,25 +49,25 @@ export class AeronaveController {
     next();
   };
 
-  findAll = async (req: Request, res: Response) => {
-    // TODO: service
-    const aeronaves = await orm.em.findAll(Aeronave);
-    res.status(200).json({
-      mensaje: 'todas las aeronaves',
-      data: aeronaves,
-    });
+  findAll = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+      const aeronaves = await s.findAll();
+      res.status(200).json({
+        mensaje: 'todas las aeronaves',
+        data: aeronaves,
+      });
+    } catch (error){
+      next(error);
+    }
   };
 
   getOne = async (req: Request, res: Response, next: NextFunction) => {
-    // TODO: service
     try {
-      const id = Number(req.params.id);
-
+      const id = Number(req.params.id)
       if (Number.isNaN(id)) {
         throw new NotFoundIDError();
       }
-
-      const aeronave = await orm.em.findOneOrFail(Aeronave, { id }, { populate: ['miProveedor'] });
+      const aeronave = await s.getOne(id);
 
       res.status(200).json({ mensaje: 'la aeronave ' + id, data: aeronave });
     } catch (error) {
@@ -78,17 +77,7 @@ export class AeronaveController {
 
   saveOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // TODO: service
-      const input = req.body.sanitizedInput;
-      const proveedor = await orm.em.findOne(Usuario, { id: input.miProveedor });
-
-      if (!proveedor) {
-        throw new BadRequestError('El proveedor ingresado no existe.');
-      }
-      // faltan más validaciones a implementar cuando se haga el service
-
-      const nuevaAeronave = orm.em.create(Aeronave, req.body.sanitizedInput);
-      await orm.em.flush();
+      const nuevaAeronave = await s.saveOne(req.body.sanitizedInput);
 
       res.status(201).json({
         mensaje: 'aeronave creada exitosamente',
@@ -100,13 +89,13 @@ export class AeronaveController {
   };
 
   updateOne = async (req: Request, res: Response, next: NextFunction) => {
-    //TODO: service
     try {
       const id = Number(req.params.id);
+      if (Number.isNaN(id)) {
+        throw new NotFoundIDError();
+      }
 
-      const aeronave = await orm.em.findOneOrFail(Aeronave, { id });
-      orm.em.assign(aeronave, req.body.sanitizedInput);
-      await orm.em.flush();
+      const aeronave = await s.updateOne(id, req.body.sanitizedInput)
 
       res.status(200).json({
         message: 'aeronave actualizada',
@@ -118,7 +107,6 @@ export class AeronaveController {
   };
 
   removeOne = async (req: Request, res: Response, next: NextFunction) => {
-    // TODO: service
     try {
       const id = Number(req.params.id);
 
@@ -126,10 +114,7 @@ export class AeronaveController {
         throw new NotFoundIDError();
       }
 
-      // esto obtiene la referencia sin cargar el objeto
-      const aeronave = orm.em.getReference(Aeronave, id);
-      orm.em.remove(aeronave);
-      await orm.em.flush();
+      await s.removeOne(id);
 
       res.status(200).json({ mensaje: 'la aeronave ha sido eliminada correctamente' });
     } catch (error) {

@@ -6,7 +6,7 @@ POST http://localhost:3000/api/aeronaves
 Content-Type: application/json
 
 {
-  "modelo": "salusa secundus",
+  "modelo": "loollololool",
   "fabricante": "yo",
   "descripcion": "johogwobhwh",
   "capacidad": 1,
@@ -17,7 +17,7 @@ Content-Type: application/json
 }
 
 ###ID
-@id = 7
+@id = 12
 
 ### GET ONE
 GET http://localhost:3000/api/aeronaves/{{id}}
