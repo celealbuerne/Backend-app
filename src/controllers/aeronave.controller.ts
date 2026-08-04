@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import { orm } from '../shared/orm.js';
-import { Aeronave } from '../entities/aeronave.entity.js';
-import { Usuario } from '../entities/usuario.entity.js';
+import { Aeronave } from '../models/aeronave.entity.js';
+import { Usuario } from '../models/usuario.entity.js';
+import { NotFoundIDError } from '../errors/notFound.error.js';
+import { BadRequestError } from '../errors/badRequest.error.js';
 
 // const em = orm.em;
 export class AeronaveController {
@@ -57,34 +59,31 @@ export class AeronaveController {
     });
   };
 
-  getOne = async (req: Request, res: Response) => {
+  getOne = async (req: Request, res: Response, next: NextFunction) => {
     // TODO: service
     try {
       const id = Number(req.params.id);
 
       if (Number.isNaN(id)) {
-        throw new Error('el id solicitado es inválido');
+        throw new NotFoundIDError();
       }
 
       const aeronave = await orm.em.findOneOrFail(Aeronave, { id }, { populate: ['miProveedor'] });
 
       res.status(200).json({ mensaje: 'la aeronave ' + id, data: aeronave });
-    } catch (error: any) {
-      res.status(404).json({ message: error.message });
+    } catch (error) {
+      next(error);
     }
   };
 
-  saveOne = async (req: Request, res: Response) => {
+  saveOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       // TODO: service
       const input = req.body.sanitizedInput;
       const proveedor = await orm.em.findOne(Usuario, { id: input.miProveedor });
 
       if (!proveedor) {
-        // 404 o 400 porque el recurso relacionado no existe
-        return res
-          .status(404)
-          .json({ mensaje: 'el proveedor con ID ' + input.miProveedor + ' no existe.' });
+        throw new BadRequestError('El proveedor ingresado no existe.');
       }
       // faltan más validaciones a implementar cuando se haga el service
 
@@ -95,12 +94,12 @@ export class AeronaveController {
         mensaje: 'aeronave creada exitosamente',
         data: nuevaAeronave,
       });
-    } catch (error: any) {
-      res.status(500).json({ mensaje: error.message });
+    } catch (error) {
+      next(error);
     }
   };
 
-  updateOne = async (req: Request, res: Response) => {
+  updateOne = async (req: Request, res: Response, next: NextFunction) => {
     //TODO: service
     try {
       const id = Number(req.params.id);
@@ -113,18 +112,18 @@ export class AeronaveController {
         message: 'aeronave actualizada',
         data: aeronave,
       });
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
+    } catch (error) {
+      next(error);
     }
   };
 
-  removeOne = async (req: Request, res: Response) => {
+  removeOne = async (req: Request, res: Response, next: NextFunction) => {
     // TODO: service
     try {
       const id = Number(req.params.id);
 
       if (Number.isNaN(id)) {
-        res.status(400).json({ message: 'el id ingresado no es válido' });
+        throw new NotFoundIDError();
       }
 
       // esto obtiene la referencia sin cargar el objeto
@@ -133,8 +132,8 @@ export class AeronaveController {
       await orm.em.flush();
 
       res.status(200).json({ mensaje: 'la aeronave ha sido eliminada correctamente' });
-    } catch (error: any) {
-      res.status(404).json({ message: error.message });
+    } catch (error) {
+      next(error);
     }
   };
 
