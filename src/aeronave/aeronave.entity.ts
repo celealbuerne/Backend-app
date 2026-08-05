@@ -1,6 +1,6 @@
 import { /*Collection, OneToMany,*/ Entity, ManyToOne, Property } from '@mikro-orm/core';
-import { BaseEntity } from '../shared/baseEntity.entity.js';
-import { Usuario } from './usuario.entity.js';
+import { BaseEntity } from '../shared/db/baseEntity.entity.js';
+import { Usuario } from '../usuario/usuario.entity.js';
 
 @Entity()
 export class Aeronave extends BaseEntity {

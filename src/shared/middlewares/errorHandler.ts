@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AppError } from '../shared/appError.js';
+import { AppError } from '../errors/appError.js';
 import {
   NotFoundError as MikroNotFoundError,
   UniqueConstraintViolationException,

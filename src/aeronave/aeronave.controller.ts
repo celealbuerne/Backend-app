@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { NotFoundIDError } from '../errors/notFound.error.js';
-import { AeronaveService } from '../services/aeronave.service.js';
+import { NotFoundIDError } from '../shared/errors/notFound.error.js';
+import { AeronaveService } from './aeronave.service.js';
 
 const s = new AeronaveService();
 // const em = orm.em;

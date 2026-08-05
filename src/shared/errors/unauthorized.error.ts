@@ -1,4 +1,4 @@
-import { AppError } from '../shared/appError.js';
+import { AppError } from './appError.js';
 
 export class UnauthorizedError extends AppError {
   constructor(mensaje: string = 'El cliente no está autenticado') {

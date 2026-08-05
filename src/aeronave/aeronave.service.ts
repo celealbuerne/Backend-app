@@ -1,9 +1,9 @@
 import { EntityData, RequiredEntityData } from "@mikro-orm/core";
-import { BadRequestError } from "../errors/badRequest.error.js";
-import { Aeronave } from "../models/aeronave.entity.js";
-import { CreateAeronaveInput } from "../models/createAeronave.interface.js";
-import { Usuario } from "../models/usuario.entity.js";
-import { orm } from "../shared/orm.js";
+import { BadRequestError } from "../shared/errors/badRequest.error.js";
+import { Aeronave } from "./aeronave.entity.js";
+import { CreateAeronaveInput } from "./createAeronave.interface.js";
+import { Usuario } from "../usuario/usuario.entity.js";
+import { orm } from "../shared/db/orm.js";
 
 export class AeronaveService{
     findAll = async () => {
@@ -33,7 +33,7 @@ export class AeronaveService{
             }
         }
 
-        const proveedor = await orm.em.findOne(Usuario, { id: input.miProveedor})
+        const proveedor = await orm.em.findOne(Usuario, { id: input.miProveedor })
         if (!proveedor) {
             throw new BadRequestError('El proveedor ingresado no existe.');
         }

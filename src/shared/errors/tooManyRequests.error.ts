@@ -1,4 +1,4 @@
-import { AppError } from '../shared/appError.js';
+import { AppError } from './appError.js';
 
 export class TooManyRequests extends AppError {
   constructor(mensaje: string = 'Too many requests') {

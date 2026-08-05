@@ -2,10 +2,10 @@ import "reflect-metadata";
 import express  from 'express';
 import { Request, Response } from 'express';
 import cors from 'cors';
-import { orm, syncSchema } from "./shared/orm.js";
-import errorHandler from './middlewares/errorHandler.js';
+import { orm, syncSchema } from "./shared/db/orm.js";
+import errorHandler from './shared/middlewares/errorHandler.js';
 import { RequestContext } from "@mikro-orm/core";
-import aeronaveRouter from "./routes/aeronave.routes.js";
+import aeronaveRouter from "./aeronave/aeronave.routes.js";
 
 const app = express();
 const PORT = 3000;

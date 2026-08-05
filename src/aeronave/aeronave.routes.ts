@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { AeronaveController } from '../controllers/aeronave.controller.js';
+import { AeronaveController } from './aeronave.controller.js';
 
 const aeronaveRouter = Router();
 const c = new AeronaveController();
