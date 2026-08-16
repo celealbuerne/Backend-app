@@ -34,14 +34,14 @@ export class Usuario extends BaseEntity<'aeronaves'> {
     _pais: string,
     _tipoDocumento: string,
     _documento: number,
-    _fechaNAcimiento: Date
+    _fechaNacimiento: Date
   ) {
     super();
     this.nombre = _nombre;
     this.pais = _pais;
     this.tipoDocumento = _tipoDocumento;
     this.documento = _documento;
-    this.fechaNacimiento = _fechaNAcimiento;
+    this.fechaNacimiento = _fechaNacimiento;
   }
 
   getCantidadContactos(): number {

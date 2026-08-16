@@ -6,6 +6,7 @@ import { orm, syncSchema } from "./shared/db/orm.js";
 import errorHandler from './shared/middlewares/errorHandler.js';
 import { RequestContext } from "@mikro-orm/core";
 import aeronaveRouter from "./aeronave/aeronave.routes.js";
+import usuarioRouter from "./usuario/usuario.routes.js";
 
 const app = express();
 const PORT = 3000;
@@ -18,7 +19,8 @@ app.use((req: Request, res: Response, next) =>{
   RequestContext.create(orm.em, next);
 })
 
-app.use('/api/aeronaves', aeronaveRouter)
+app.use('/api/aeronaves', aeronaveRouter);
+app.use('/api/usuarios', usuarioRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'hola buenas' });
