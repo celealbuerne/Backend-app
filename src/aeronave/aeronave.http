@@ -17,13 +17,13 @@ Content-Type: application/json
 }
 
 ###ID
-@id = 16
+@id = 1
 
 ### GET ONE
 GET http://localhost:3000/api/aeronaves/{{id}}
 
 ### UPDATE
-PUT http://localhost:3000/api/aeronaves/{{id}}
+PATCH http://localhost:3000/api/aeronaves/{{id}}
 Content-Type: application/json
 
 {
