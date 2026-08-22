@@ -2,7 +2,6 @@ import { Collection, Entity, OneToMany, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
 
-// TODO: autenticacion (login), no puede ir acá, ni lógica ni datos
 @Entity()
 export class Usuario extends BaseEntity<'aeronaves'> {
   @Property()

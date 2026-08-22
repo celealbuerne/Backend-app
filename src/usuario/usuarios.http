@@ -16,7 +16,7 @@ Content-Type: application/json
 
 
 ###ID
-@id = 1
+@id = 3
 
 ### GET ONE
 GET http://localhost:3000/api/usuarios/{{id}}
@@ -26,10 +26,9 @@ PATCH http://localhost:3000/api/usuarios/{{id}}
 Content-Type: application/json
 
 {
-  "descripcion": "saaaaaaas",
-  "capacidad": 1,
-  "autonomia": 105,
-  "velocidadMaxima": 10
+  "nombre": "Yuri",
+  "pais": "Rusia",
+  "contacto": ["yosoyyuri@lol.rer"]
 }
 
 ### DELETE

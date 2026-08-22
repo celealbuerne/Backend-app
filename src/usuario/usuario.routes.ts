@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { UsuarioController } from "./usuario.controller.js";
-import * as md from './usuario.middleware.js'
+import { Router } from 'express';
+import { UsuarioController } from './usuario.controller.js';
+import * as md from './usuario.middleware.js';
 
 const usuarioRouter = Router();
 const c = new UsuarioController();
@@ -9,5 +9,7 @@ const c = new UsuarioController();
 usuarioRouter.get('/', c.findAll);
 usuarioRouter.get('/:id', c.getOne);
 usuarioRouter.post('/', md.sanitizeInput, md.validarCrearDatos, c.saveOne);
+usuarioRouter.put('/:id', md.sanitizeInput, md.validarCrearDatos, c.updateOne);
+usuarioRouter.patch('/:id', md.sanitizeInput, c.updateOne);
 
 export default usuarioRouter;
