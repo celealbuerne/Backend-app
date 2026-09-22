@@ -1,0 +1,33 @@
+### GET ALL
+GET http://localhost:3000/api/localidades
+
+### SAVE
+POST http://localhost:3000/api/localidades
+Content-Type: application/json
+
+{
+    "pais": "Argentina",
+    "provincia": "Santa Fe",
+    "nombre": "Rosario",
+    "codigoPostal": 3000
+}
+
+###ID
+@id = 3
+
+### GET ONE
+GET http://localhost:3000/api/localidades/{{id}}
+
+### UPDATE
+PATCH http://localhost:3000/api/localidades/{{id}}
+Content-Type: application/json
+
+{
+  "pais": "Argentina",
+  "provincia": "La Pampa",
+  "nombre": "Santa Rosa",
+  "codigoPostal": 2000
+}
+
+### DELETE
+DELETE http://localhost:3000/api/localidades/{{id}}

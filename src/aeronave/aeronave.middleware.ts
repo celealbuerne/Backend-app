@@ -25,9 +25,9 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     antiguedad: antiguedad ? new Date(antiguedad) : undefined,
     miProveedor: miProveedor !== undefined ? Number(miProveedor) : undefined,
   };
-  // limpiar claves que hayan quedado undefined
+  // limpiar claves que hayan quedado undefined O VACIAS
   Object.keys(sanitizedInput).forEach((key) => {
-    if (sanitizedInput[key] === undefined) {
+    if (sanitizedInput[key] === undefined || sanitizedInput[key] === '') {
       delete sanitizedInput[key];
     }
   });

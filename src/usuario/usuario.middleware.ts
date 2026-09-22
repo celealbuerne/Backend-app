@@ -25,7 +25,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     documento: documento ? Number(documento) : undefined,
   };
   Object.keys(sanitizedInput).forEach((key) => {
-    if (sanitizedInput[key] === undefined) {
+    if (sanitizedInput[key] === undefined || sanitizedInput[key] === '') {
       delete sanitizedInput[key];
     }
   });

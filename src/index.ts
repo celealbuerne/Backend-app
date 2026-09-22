@@ -7,6 +7,8 @@ import errorHandler from './shared/middlewares/errorHandler.js';
 import { RequestContext } from "@mikro-orm/core";
 import aeronaveRouter from "./aeronave/aeronave.routes.js";
 import usuarioRouter from "./usuario/usuario.routes.js";
+import localidadRouter from "./localidad/localidad.routes.js";
+import aeropuertoRouter from "./aeropuerto/aeropuerto.routes.js";
 
 const app = express();
 const PORT = 3000;
@@ -21,6 +23,8 @@ app.use((req: Request, res: Response, next) =>{
 
 app.use('/api/aeronaves', aeronaveRouter);
 app.use('/api/usuarios', usuarioRouter);
+app.use('/api/localidades', localidadRouter);
+app.use('/api/aeropuertos',aeropuertoRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'hola buenas' });

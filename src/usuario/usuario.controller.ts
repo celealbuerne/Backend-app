@@ -60,4 +60,20 @@ export class UsuarioController {
       next(error);
     }
   };
+
+//Faltaba para eliminar un usuario  
+  removeOne = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = Number(req.params.id);
+      if (Number.isNaN(id)) {
+        throw new BadRequestError('El usuario ingresado no es válido.');
+      }
+      await this.s.removeOne(id);
+      res.status(200).json({
+        message: 'Usuario eliminado',
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
 }

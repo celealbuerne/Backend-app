@@ -11,5 +11,6 @@ usuarioRouter.get('/:id', c.getOne);
 usuarioRouter.post('/', md.sanitizeInput, md.validarCrearDatos, c.saveOne);
 usuarioRouter.put('/:id', md.sanitizeInput, md.validarCrearDatos, c.updateOne);
 usuarioRouter.patch('/:id', md.sanitizeInput, c.updateOne);
+usuarioRouter.delete('/:id', c.removeOne);
 
 export default usuarioRouter;

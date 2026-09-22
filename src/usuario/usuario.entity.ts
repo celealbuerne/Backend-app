@@ -17,6 +17,7 @@ export class Usuario extends BaseEntity<'aeronaves'> {
 
   @Property()
   estado: string = 'activo';
+  //estado: 'activo' | 'inactivo' = 'activo';en publicacion puse asi pero bueno habria q ver cual conviene mas
 
   @Property({ length: 50 })
   nombre: string;

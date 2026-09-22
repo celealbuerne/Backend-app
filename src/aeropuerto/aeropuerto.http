@@ -1,0 +1,33 @@
+### GET ALL
+GET http://localhost:3000/api/aeropuertos
+
+### SAVE
+POST http://localhost:3000/api/aeropuertos
+Content-Type: application/json
+
+{
+    "nombre": "Aeropuerto Internacional de Ezeiza",
+    "codigo": "EZE",
+    "localidadNombre": "Rosario"
+
+}
+
+###ID
+@id = 1
+
+### GET ONE
+GET http://localhost:3000/api/aeropuertos/{{id}}
+
+### UPDATE
+PATCH http://localhost:3000/api/aeropuertos/{{id}}
+Content-Type: application/json
+
+{
+  "codigo": "LAS",
+  "nombre": "Aeropuerto Internacional de Las Vegas",
+  "localidadNombre": "Las Vegas"
+
+}
+
+### DELETE
+DELETE http://localhost:3000/api/aeropuertos/{{id}}

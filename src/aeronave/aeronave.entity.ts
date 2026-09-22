@@ -1,6 +1,7 @@
-import { /*Collection, OneToMany,*/ Entity, ManyToOne, Property } from '@mikro-orm/core';
+import { /*Collection*/ Entity, ManyToOne, Property, OneToOne } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
+import { Publicacion } from '../publicacion/publicacion.entity.js';
 
 @Entity()
 export class Aeronave extends BaseEntity {
@@ -27,6 +28,9 @@ export class Aeronave extends BaseEntity {
 
   @Property()
   antiguedad!: Date;
+
+  @OneToOne(() => Publicacion, (publicacion) => publicacion.laAeronave)  //LO PUSE ONE TO ONE
+  miPublicacion?: Publicacion;
 
   constructor(
     _modelo: string,
@@ -64,6 +68,6 @@ export class Aeronave extends BaseEntity {
   // })
   // aeropuertoActual?: Aeropuerto;
 
-  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)
+  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)        ONE TO ONE X EL MD Y SINO HAY Q CAMBIAR EL MD
   // miPublicacion?: Publicacion;
 }
