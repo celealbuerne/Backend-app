@@ -6,7 +6,6 @@ const aeropuertoRouter = Router();
 const aeropuertoController = new AeropuertoController();
 
 aeropuertoRouter.get('/', aeropuertoController.findAll);
-aeropuertoRouter.get('/localidad/:localidadID', aeropuertoController.findByLocalidad);
 aeropuertoRouter.get('/:id', aeropuertoController.findOne);
 aeropuertoRouter.post('/', md.sanitizeInput, md.validarCrearDatos, aeropuertoController.saveOne);
 aeropuertoRouter.put('/:id', md.sanitizeInput, md.validarCrearDatos, aeropuertoController.updateOne);

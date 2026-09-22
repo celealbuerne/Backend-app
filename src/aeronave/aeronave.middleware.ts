@@ -65,3 +65,6 @@ export function validarCrearDatos(req: Request, res: Response, next: NextFunctio
   }
   next();
 }
+
+// SI NO SE MANDA NADA SE ACTUALIZA EXITOSAMENTE IGUAL, SI SE MANDA CUALQUIER OTRO CAMPO TAMBIEN
+//FALTA VALIDAR ESO

@@ -17,14 +17,15 @@ export class PublicacionService {
         return publicacion;
     };
 
-    saveOne = async (input: CreatePublicacionDTO) => {
+    //va imagen: string pq el service guarda el nombre de la img
+    saveOne = async (input: CreatePublicacionDTO, imagen: string) => {
         const aeronave = await orm.em.findOne(Aeronave, {id: input.aeronaveID});
         if (!aeronave)
             throw new BadRequestError();
         const nuevaPublicacion = orm.em.create(Publicacion, { //VA ASI PQ DTO DISTINTO DE ENTIDAD
             descripcion: input.descripcion,
             precioPorKM: input.precioPorKM,
-            imagen: imagen, //RECIBE DE MULTER
+            imagen: imagen, //recibe de multer
             estado: 'activo',
             laAeronave: aeronave
         });
@@ -32,7 +33,7 @@ export class PublicacionService {
         return nuevaPublicacion;
     };
 
-    updateOne = async (id: number, input: UpdatePublicacionDTO) => {
+    updateOne = async (id: number, input: UpdatePublicacionDTO, imagen?: string) => {
         const publicacion = await orm.em.findOne(Publicacion, {id});
         if (!publicacion)
             throw new BadRequestError('La publicacion ingresada no existe');

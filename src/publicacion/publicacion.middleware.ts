@@ -3,7 +3,7 @@ import {BadRequestError} from '../shared/errors/badRequest.error.js';
 import {CreatePublicacionDTO, UpdatePublicacionDTO} from './publicacion.dto.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-    const {estado, precioPorKM, fechaInicio, fechaFin, laAeronave} = req.body;
+    const {descripcion, precioPorKM, laAeronave} = req.body;
 
     const sanitizedInput: Record<string, any> = {
         //estado: estado ? String(estado).trim() : undefined,
@@ -22,7 +22,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
         throw new BadRequestError('El valor del precio/KM ingresado no es válido.');
     }
 
-    if (sanitizedInput.aeronaveID !== undefined && Number.isNaN(sanitizedInput.aeronaveID)) {
+    if (sanitizedInput.aeronaveID !== undefined && (Number.isNaN(sanitizedInput.aeronaveID) || sanitizedInput.aeronaveID <= 0)) {
         throw new BadRequestError('El ID de la aeronave ingresado no es válido.');
     }
     
@@ -41,7 +41,7 @@ export function validarCrearPublicacion(req: Request, res: Response, next: NextF
     ];
     
     camposObligatorios.forEach((campo) => {
-        if (!input[campo]) {
+        if (!input[campo] === undefined) {
             throw new BadRequestError(`El campo ${campo} es obligatorio.`);
         }
     });

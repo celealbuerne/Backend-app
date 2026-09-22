@@ -13,20 +13,30 @@ Content-Type: application/json
 }
 
 ###ID
-@id = 3
+@id = 2
 
 ### GET ONE
 GET http://localhost:3000/api/localidades/{{id}}
 
 ### UPDATE
-PATCH http://localhost:3000/api/localidades/{{id}}
+
+PUT http://localhost:3000/api/localidades/{{id}}
 Content-Type: application/json
 
 {
   "pais": "Argentina",
-  "provincia": "La Pampa",
-  "nombre": "Santa Rosa",
-  "codigoPostal": 2000
+  "provincia": "Santa Fe",
+  "nombre": "Rosario",
+  "codigoPostal": 3000
+}
+
+### PATCH
+
+PATCH http://localhost:3000/api/localidades/{{id}}
+Content-Type: application/json
+
+{
+  "pais": "Chile"
 }
 
 ### DELETE

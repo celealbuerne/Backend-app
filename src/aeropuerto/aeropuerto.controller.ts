@@ -21,7 +21,7 @@ export class AeropuertoController {
     findOne = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const id = Number(req.params.id);   
-            if (Number.isNaN(id)) {
+            if (Number.isNaN(id) || id <= 0) {
                 throw new NotFoundIDError();
             }
             const aeropuerto = await this.s.getOne(id);
@@ -50,7 +50,7 @@ export class AeropuertoController {
     updateOne = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const id = Number(req.params.id);
-            if (Number.isNaN(id)) {
+            if (Number.isNaN(id) || id <= 0) {
                 throw new NotFoundIDError();
             }
             const aeropuerto = await this.s.updateOne(id, req.body.sanitizedInput);
@@ -66,7 +66,7 @@ export class AeropuertoController {
     removeOne = async (req: Request, res: Response, next: NextFunction) => {    
         try {
             const id = Number(req.params.id);
-            if (Number.isNaN(id)) {
+            if (Number.isNaN(id) || id <= 0) {
                 throw new NotFoundIDError();
             }
             const aeropuerto = await this.s.removeOne(id);
