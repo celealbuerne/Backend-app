@@ -9,6 +9,7 @@ import aeronaveRouter from "./aeronave/aeronave.routes.js";
 import usuarioRouter from "./usuario/usuario.routes.js";
 import localidadRouter from "./localidad/localidad.routes.js";
 import aeropuertoRouter from "./aeropuerto/aeropuerto.routes.js";
+import publicacionRouter from "./publicacion/publicacion.routes.js";
 
 const app = express();
 const PORT = 3000;
@@ -25,6 +26,7 @@ app.use('/api/aeronaves', aeronaveRouter);
 app.use('/api/usuarios', usuarioRouter);
 app.use('/api/localidades', localidadRouter);
 app.use('/api/aeropuertos',aeropuertoRouter);
+app.use('/api/publicaciones', publicacionRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'hola buenas' });

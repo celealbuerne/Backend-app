@@ -2,6 +2,7 @@ import { Collection, Entity, Enum, OneToMany, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
 import { Contacto } from './contacto.entity.js';
+import { Reserva } from '../reserva/reserva.entity.js';
 
 export enum RolUsuario {
   CLIENTE = 'CLIENTE',
@@ -22,6 +23,12 @@ export class Usuario extends BaseEntity<'aeronaves'> {
   @Property({ length: 50 })
   nombre: string;
 
+  @Property({ length: 50 })
+  usuario: string;
+
+  @Property({ hidden: true })
+  contrasena: string;
+
   @Property()
   contacto: Contacto[] = [];
 
@@ -39,6 +46,9 @@ export class Usuario extends BaseEntity<'aeronaves'> {
 
   @OneToMany({ mappedBy: 'miProveedor' })
   aeronaves = new Collection<Aeronave>(this);
+
+  @OneToMany({ mappedBy: 'usuario' })
+  reservas = new Collection<Reserva>(this);
 
   constructor(
     _nombre: string,

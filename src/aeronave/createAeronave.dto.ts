@@ -6,5 +6,5 @@ export interface CreateAeronaveDTO {
   autonomia: number;
   velocidadMaxima: number;
   antiguedad: Date;
-  miProveedor: number;
+  miProveedor: number;  //revisar en auth
 }

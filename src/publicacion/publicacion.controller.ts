@@ -8,7 +8,9 @@
     
     findAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const publicaciones = await this.s.findAll();
+            const precioMax = req.query.precioMax ? Number(req.query.precioMax) : undefined;
+            const precioMin = req.query.precioMin ? Number(req.query.precioMin) : undefined;
+            const publicaciones = await this.s.findAll(precioMax, precioMin);
             res.status(200).json({
                 mensaje: 'Listado publicaciones',
                 data: publicaciones,
@@ -37,7 +39,8 @@
         try {
             const input = req.body.sanitizedInput;
             const imagen = req.file!.filename;
-            const nuevaPublicacion = await this.s.saveOne(input,imagen);
+            const aeronave = req.body.aeronave;
+            const nuevaPublicacion = await this.s.saveOne(input, imagen, aeronave);
             res.status(201).json({
                 mensaje: 'Publicacion creada exitosamente',
                 data: nuevaPublicacion,
@@ -73,20 +76,6 @@
             res.status(200).json({
                 mensaje: 'Publicacion eliminada exitosamente',
                 data: publicacion,
-            });
-        } catch (error) {
-            next(error);
-        }
-    };
-
-    findActivas = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const precioMax = req.query.precioMax ? Number(req.query.precioMax) : undefined;
-            const precioMin = req.query.precioMin ? Number(req.query.precioMin) : undefined;
-            const publicaciones = await this.s.findActivas(precioMax, precioMin);
-            res.status(200).json({
-                mensaje: 'Listado publicaciones activas',
-                data: publicaciones,
             });
         } catch (error) {
             next(error);

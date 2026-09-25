@@ -3,6 +3,7 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Localidad } from '../localidad/localidad.entity.js';
 
 
+
 @Entity()
 export class Aeropuerto extends BaseEntity {    
     
@@ -15,11 +16,9 @@ export class Aeropuerto extends BaseEntity {
     @ManyToOne()
     laLocalidad: Localidad;
 
-    //CREO Q NO LO NECESITAMOS PERO X LAS DUDAS LO DEJO
-    //reservasOrigen = new Collection<SolicitudReserva>(this);
-
-    //@OneToMany(() => SolicitudReserva, solicitud => solicitud.destino)
-    //reservasDestino = new Collection<SolicitudReserva>(this);
+    //no se si se necesita aca
+    //@OneToMany(() => Reserva, (reserva) => reserva.elAeropuerto)
+    //reservas = new Collection<Reserva>(this);
 
     constructor(
         _nombre: string,
