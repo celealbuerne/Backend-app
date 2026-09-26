@@ -10,9 +10,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   if (Array.isArray(contacto)) {
     sc = contacto.map((c) => String(c).trim()).filter((c) => c.length > 0); // quita vacios
   } else if (contacto !== undefined) {
-    throw new BadRequestError(
-      'Los contactos ingresados no son validos o contienen información no admitida.'
-    );
+    throw new BadRequestError('Los contactos ingresados no son validos o contienen información no admitida.');
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {

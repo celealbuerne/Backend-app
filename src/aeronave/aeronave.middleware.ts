@@ -3,16 +3,7 @@ import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateAeronaveDTO } from './createAeronave.dto.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const {
-    modelo,
-    fabricante,
-    descripcion,
-    capacidad,
-    autonomia,
-    velocidadMaxima,
-    antiguedad,
-    miProveedor,
-  } = req.body;
+  const { modelo, fabricante, descripcion, capacidad, autonomia, velocidadMaxima, antiguedad, miProveedor } = req.body;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {

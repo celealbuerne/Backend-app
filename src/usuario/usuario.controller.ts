@@ -61,7 +61,7 @@ export class UsuarioController {
     }
   };
 
-//Faltaba para eliminar un usuario  
+  //Faltaba para eliminar un usuario
   removeOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);

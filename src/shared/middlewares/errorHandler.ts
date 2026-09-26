@@ -63,23 +63,22 @@ export default function errorHandler(
     });
     return;
   }
-  
+
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
-        res.status(400).json({
-            status: 'fail',
-            message: 'La imagen no puede superar los 5 MB',
-        });
-        return;
+      res.status(400).json({
+        status: 'fail',
+        message: 'La imagen no puede superar los 5 MB',
+      });
+      return;
     }
 
     res.status(400).json({
-        status: 'fail',
-        message: 'Error al subir la imagen',
+      status: 'fail',
+      message: 'Error al subir la imagen',
     });
     return;
   }
-  
 
   // errores tipo AppError
   if (err instanceof AppError) {

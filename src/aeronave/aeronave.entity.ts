@@ -29,7 +29,7 @@ export class Aeronave extends BaseEntity {
   @Property()
   antiguedad!: Date;
 
-  @OneToOne(() => Publicacion, (publicacion) => publicacion.laAeronave)  //LO PUSE ONE TO ONE
+  @OneToOne(() => Publicacion, (publicacion) => publicacion.laAeronave) //LO PUSE ONE TO ONE
   miPublicacion?: Publicacion;
 
   constructor(

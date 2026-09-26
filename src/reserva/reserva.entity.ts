@@ -1,19 +1,18 @@
-import {Entity, Property, ManyToOne, Enum} from '@mikro-orm/core';
-import {BaseEntity} from '../shared/db/baseEntity.entity.js';
-import {Usuario} from '../usuario/usuario.entity.js';
-import {Publicacion} from '../publicacion/publicacion.entity.js';
-import {Aeropuerto} from '../aeropuerto/aeropuerto.entity.js';
+import { Entity, Property, ManyToOne, Enum } from '@mikro-orm/core';
+import { BaseEntity } from '../shared/db/baseEntity.entity.js';
+import { Usuario } from '../usuario/usuario.entity.js';
+import { Publicacion } from '../publicacion/publicacion.entity.js';
+import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 
 export enum EstadoReserva {
   PENDIENTE = 'pendiente',
   CONFIRMADA = 'confirmada',
   RECHAZADA = 'rechazada',
-  CANCELADA = 'cancelada'
+  CANCELADA = 'cancelada',
 }
 
 @Entity()
 export class Reserva extends BaseEntity {
-
   //SUPONEMOS QUE SOLO SE ALQUILA POR UN DIA
   //@Property()
   //fechaInicio: Date;
@@ -29,8 +28,8 @@ export class Reserva extends BaseEntity {
 
   @Enum(() => EstadoReserva)
   estado: EstadoReserva = EstadoReserva.PENDIENTE;
-//estado: 'pendiente' | 'confirmada' | 'rechazada' = 'pendiente';
-//cancelar reserva seria otro CUU asi q SE DEJA PARA AD
+  //estado: 'pendiente' | 'confirmada' | 'rechazada' = 'pendiente';
+  //cancelar reserva seria otro CUU asi q SE DEJA PARA AD
 
   @ManyToOne(() => Usuario)
   elUsuario: Usuario;
@@ -40,15 +39,15 @@ export class Reserva extends BaseEntity {
 
   @ManyToOne(() => Aeropuerto)
   elAeropuerto: Aeropuerto;
-  
+
   constructor(
     _destino: string,
     _montoTotal: number,
     _estado: EstadoReserva,
     _usuario: Usuario,
     _publicacion: Publicacion,
-    _aeropuerto: Aeropuerto,
-    ) {
+    _aeropuerto: Aeropuerto
+  ) {
     super();
     this.destino = _destino;
     this.montoTotal = _montoTotal;
@@ -56,7 +55,5 @@ export class Reserva extends BaseEntity {
     this.elUsuario = _usuario;
     this.laPublicacion = _publicacion;
     this.elAeropuerto = _aeropuerto;
+  }
 }
-
-}
-

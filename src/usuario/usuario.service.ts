@@ -1,4 +1,4 @@
-import { EntityData} from '@mikro-orm/core';
+import { EntityData } from '@mikro-orm/core';
 import { orm } from '../shared/db/orm.js';
 import { CreateUsuarioDTO } from './createUsuario.dto.js';
 import { Usuario } from './usuario.entity.js';
@@ -16,14 +16,15 @@ export class UsuarioService {
   };
 
   saveOne = async (input: CreateUsuarioDTO) => {
-    const nuevoUsuario = orm.em.create(Usuario, { //ESTA PARTE LA CAMBIE PQ ANTES TIRABA ERROR PQ DTO DISTINTO DE ENTIDAD
+    const nuevoUsuario = orm.em.create(Usuario, {
+      //ESTA PARTE LA CAMBIE PQ ANTES TIRABA ERROR PQ DTO DISTINTO DE ENTIDAD
       nombre: input.nombre,
       pais: input.pais,
       tipoDocumento: input.tipoDocumento,
       documento: input.documento,
       fechaNacimiento: input.fechaNacimiento,
-      contacto: input.contacto //<----- TIRA ERROR, SERIA CONVENIENTE Q CONTACTO NO ESTE COMO CLASE SINO COMO ATRIBUTO/S
-    }); 
+      contacto: input.contacto, //<----- TIRA ERROR, SERIA CONVENIENTE Q CONTACTO NO ESTE COMO CLASE SINO COMO ATRIBUTO/S
+    });
     await orm.em.flush();
     return nuevoUsuario;
   };
@@ -37,11 +38,11 @@ export class UsuarioService {
 
   removeOne = async (id: number) => {
     const usuario = await orm.em.findOne(Usuario, { id });
-    if (!usuario){
+    if (!usuario) {
       throw new BadRequestError('El usuario ingresado no existe');
     }
     orm.em.remove(usuario);
     await orm.em.flush();
     return usuario;
-  }
+  };
 }

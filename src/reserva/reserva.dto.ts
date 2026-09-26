@@ -1,4 +1,4 @@
-import { EstadoReserva } from "./reserva.entity.js";
+import { EstadoReserva } from './reserva.entity.js';
 
 export interface CreateReservaDTO {
   destino: string;
@@ -8,6 +8,5 @@ export interface CreateReservaDTO {
 }
 
 export interface updateEstadoReservaDTO {
-    estado: EstadoReserva;
+  estado: EstadoReserva;
 }
-

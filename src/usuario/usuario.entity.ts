@@ -18,16 +18,16 @@ export class Usuario extends BaseEntity<'aeronaves'> {
 
   @Property()
   estado: string = 'activo';
-  //estado: 'activo' | 'inactivo' = 'activo';en publicacion puse asi pero bueno habria q ver cual conviene mas
+  //estado: 'activo' | 'inactivo' = 'activo';
 
   @Property({ length: 50 })
   nombre: string;
 
-  @Property({ length: 50 })
-  usuario: string;
+  @Property({ length: 50, unique: true }) //unico para cada usuario, si no podriamos usar mail o algo asi
+  nombreUsuario: string;
 
   @Property({ hidden: true })
-  contrasena: string;
+  contraseña: string;
 
   @Property()
   contacto: Contacto[] = [];
@@ -50,13 +50,7 @@ export class Usuario extends BaseEntity<'aeronaves'> {
   @OneToMany({ mappedBy: 'usuario' })
   reservas = new Collection<Reserva>(this);
 
-  constructor(
-    _nombre: string,
-    _pais: string,
-    _tipoDocumento: string,
-    _documento: number,
-    _fechaNacimiento: Date
-  ) {
+  constructor(_nombre: string, _pais: string, _tipoDocumento: string, _documento: number, _fechaNacimiento: Date) {
     super();
     this.nombre = _nombre;
     this.pais = _pais;

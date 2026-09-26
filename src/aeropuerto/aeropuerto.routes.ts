@@ -1,5 +1,5 @@
-import {Router} from 'express';
-import {AeropuertoController} from './aeropuerto.controller.js';
+import { Router } from 'express';
+import { AeropuertoController } from './aeropuerto.controller.js';
 import * as md from './aeropuerto.middleware.js';
 
 const aeropuertoRouter = Router();
