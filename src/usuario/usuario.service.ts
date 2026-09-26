@@ -15,19 +15,20 @@ export class UsuarioService {
     return usuario;
   };
 
-  saveOne = async (input: CreateUsuarioDTO) => {
+  //PARA REGISTRARSE AHORA ESTARIA EN AUTH CON EL LOGIN DEBERIAMOS BORRAR ESTO
+  /* saveOne = async (input: CreateUsuarioDTO) => {
     const nuevoUsuario = orm.em.create(Usuario, {
-      //ESTA PARTE LA CAMBIE PQ ANTES TIRABA ERROR PQ DTO DISTINTO DE ENTIDAD
       nombre: input.nombre,
       pais: input.pais,
       tipoDocumento: input.tipoDocumento,
       documento: input.documento,
       fechaNacimiento: input.fechaNacimiento,
-      contacto: input.contacto, //<----- TIRA ERROR, SERIA CONVENIENTE Q CONTACTO NO ESTE COMO CLASE SINO COMO ATRIBUTO/S
+      contacto: input.contacto, //<----- TIRA ERROR, SERIA CONVENIENTE Q CONTACTO NO ESTE COMO CLASE SINO COMO ATRIBUTO
     });
     await orm.em.flush();
     return nuevoUsuario;
-  };
+  }; */
+
   // TODO: separar agregar contactos, asi se estan sobreescribiendo si es patch
   updateOne = async (id: number, input: EntityData<Usuario>) => {
     const usuario = await orm.em.findOneOrFail(Usuario, { id });

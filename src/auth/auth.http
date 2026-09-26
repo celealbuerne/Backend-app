@@ -3,7 +3,22 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "nombreUsuario": "",
-  "contraseña": ""
+  "nombreUsuario": "carlos123",
+  "contraseña": "carlos123"
 }
 
+### REGISTER
+
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Carlos",
+  "nombreUsuario": "carlos123",
+  "pais": "Argentina",
+  "fechaNacimiento": "1970-05-15",
+  "tipoDocumento": "DNI",
+  "documento": 12345678,
+  "contraseña": "carlos123"
+
+}

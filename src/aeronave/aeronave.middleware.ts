@@ -2,8 +2,20 @@ import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateAeronaveDTO } from './createAeronave.dto.js';
 
+// SI NO SE MANDA NADA SE ACTUALIZA EXITOSAMENTE IGUAL, SI SE MANDA CUALQUIER OTRO CAMPO TAMBIEN
+//FALTA VALIDAR ESO
+
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const { modelo, fabricante, descripcion, capacidad, autonomia, velocidadMaxima, antiguedad, miProveedor } = req.body;
+  const {
+    modelo,
+    fabricante,
+    descripcion,
+    capacidad,
+    autonomia,
+    velocidadMaxima,
+    antiguedad,
+    miProveedor,
+  } = req.body;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {
@@ -56,6 +68,3 @@ export function validarCrearDatos(req: Request, res: Response, next: NextFunctio
   }
   next();
 }
-
-// SI NO SE MANDA NADA SE ACTUALIZA EXITOSAMENTE IGUAL, SI SE MANDA CUALQUIER OTRO CAMPO TAMBIEN
-//FALTA VALIDAR ESO

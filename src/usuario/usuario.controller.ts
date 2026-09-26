@@ -32,7 +32,7 @@ export class UsuarioController {
     }
   };
 
-  saveOne = async (req: Request, res: Response, next: NextFunction) => {
+  /*   saveOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const nuevoUsuario = await this.s.saveOne(req.body.sanitizedInput);
 
@@ -43,7 +43,7 @@ export class UsuarioController {
     } catch (error) {
       next(error);
     }
-  };
+  }; */
 
   updateOne = async (req: Request, res: Response, next: NextFunction) => {
     try {

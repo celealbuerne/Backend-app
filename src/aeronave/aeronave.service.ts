@@ -34,8 +34,6 @@ export class AeronaveService {
   };
 
   removeOne = async (id: number) => {
-    // esto obtiene la referencia sin cargar el objeto
-    //NO DETECTA EL ERROR const aeronave = orm.em.getReference(Aeronave, id);
     const aeronave = await orm.em.findOneOrFail(Aeronave, { id });
     orm.em.remove(aeronave);
     await orm.em.flush();

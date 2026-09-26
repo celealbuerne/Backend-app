@@ -30,7 +30,12 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
 export function validarCrearDatos(req: Request, res: Response, next: NextFunction) {
   const input = req.body.sanitizedInput;
 
-  const camposObligatorios: (keyof CreateLocalidadDTO)[] = ['pais', 'provincia', 'nombre', 'codigoPostal'];
+  const camposObligatorios: (keyof CreateLocalidadDTO)[] = [
+    'pais',
+    'provincia',
+    'nombre',
+    'codigoPostal',
+  ];
 
   for (const campo of camposObligatorios) {
     if (input[campo] === undefined) {

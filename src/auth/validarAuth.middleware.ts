@@ -3,7 +3,6 @@ import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { RegisterDTO, LoginDTO } from '../auth/auth.dto.js';
 import { RolUsuario } from '../usuario/usuario.entity.js';
 
-//REVISAR
 //SE ENCARGA DE REVISAR LOS DATOS DE REGISTRO Y LOGIN
 
 const ROLES_PERMITIDOS_EN_REGISTRO = [RolUsuario.CLIENTE, RolUsuario.PROVEEDOR];
@@ -11,7 +10,16 @@ const ROLES_PERMITIDOS_EN_REGISTRO = [RolUsuario.CLIENTE, RolUsuario.PROVEEDOR];
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/; //regex para validar fechas en formato ISO
 
 export function sanitizedInput(req: Request, res: Response, next: NextFunction) {
-  const { nombre, nombreUsuario, pais, fechaNacimiento, tipoDocumento, documento, contraseña, rol } = req.body;
+  const {
+    nombre,
+    nombreUsuario,
+    pais,
+    fechaNacimiento,
+    tipoDocumento,
+    documento,
+    contraseña,
+    rol,
+  } = req.body;
 
   if (fechaNacimiento !== undefined && !ISO_DATE_REGEX.test(fechaNacimiento)) {
     throw new BadRequestError('El formato de fecha de nacimiento no es válido.');
@@ -34,7 +42,10 @@ export function sanitizedInput(req: Request, res: Response, next: NextFunction) 
     }
   });
 
-  if (sanitizedInput.fechaNacimiento !== undefined && isNaN(sanitizedInput.fechaNacimiento.getTime())) {
+  if (
+    sanitizedInput.fechaNacimiento !== undefined &&
+    isNaN(sanitizedInput.fechaNacimiento.getTime())
+  ) {
     throw new BadRequestError('La fecha de nacimiento no es válida.');
   }
 
@@ -42,7 +53,10 @@ export function sanitizedInput(req: Request, res: Response, next: NextFunction) 
     throw new BadRequestError('La fecha de nacimiento no puede ser mayor a la fecha actual.');
   }
 
-  if (sanitizedInput.rol !== undefined && !ROLES_PERMITIDOS_EN_REGISTRO.includes(sanitizedInput.rol)) {
+  if (
+    sanitizedInput.rol !== undefined &&
+    !ROLES_PERMITIDOS_EN_REGISTRO.includes(sanitizedInput.rol)
+  ) {
     throw new BadRequestError('El rol ingresado no es válido.');
   }
 

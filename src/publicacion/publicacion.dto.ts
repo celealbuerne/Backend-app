@@ -3,7 +3,7 @@ export interface CreatePublicacionDTO {
   fechaFinDisponibilidad: Date;
   descripcion: string;
   precioPorKM: number;
-  aeronaveID: number; // revisar en auth??¿
+  aeronaveID: number;
 }
 
 export interface UpdatePublicacionDTO {

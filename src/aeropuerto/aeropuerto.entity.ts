@@ -13,7 +13,7 @@ export class Aeropuerto extends BaseEntity {
   @ManyToOne()
   laLocalidad: Localidad;
 
-  //no se si se necesita aca
+  //no se si es realmente necesario q el aeropuerto conozca sus reservas
   //@OneToMany(() => Reserva, (reserva) => reserva.elAeropuerto)
   //reservas = new Collection<Reserva>(this);
 

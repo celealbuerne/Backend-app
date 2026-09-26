@@ -15,7 +15,9 @@ export class AuthService {
   register = async (data: RegisterDTO) => {
     const userExistente = await orm.em.findOne(Usuario, { nombreUsuario: data.nombreUsuario });
     if (userExistente) {
-      throw new BadRequestError('El usuario ya se encuentra registrado con ese número de documento');
+      throw new BadRequestError(
+        'El usuario ya se encuentra registrado con ese número de documento'
+      );
     }
     const contraseñaCifrada = await bcrypt.hash(data.contraseña, 10);
     const nuevoUsuario = orm.em.create(Usuario, {

@@ -13,7 +13,11 @@ export class AeropuertoService {
       if (!localidad) {
         throw new BadRequestError('La localidad ingresada no existe.');
       }
-      const aeropuertos = await orm.em.find(Aeropuerto, { laLocalidad: localidad }, { populate: ['laLocalidad'] });
+      const aeropuertos = await orm.em.find(
+        Aeropuerto,
+        { laLocalidad: localidad },
+        { populate: ['laLocalidad'] }
+      );
       return { localidad, aeropuertos };
     }
     const aeropuertos = await orm.em.findAll(Aeropuerto, { populate: ['laLocalidad'] });
@@ -21,7 +25,11 @@ export class AeropuertoService {
   };
 
   getOne = async (id: number) => {
-    const aeropuerto = await orm.em.findOneOrFail(Aeropuerto, { id }, { populate: ['laLocalidad'] });
+    const aeropuerto = await orm.em.findOneOrFail(
+      Aeropuerto,
+      { id },
+      { populate: ['laLocalidad'] }
+    );
     return aeropuerto;
   };
 

@@ -7,7 +7,13 @@ import { Aeronave } from '../aeronave/aeronave.entity.js'; //lo mismo
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/; //regex para validar fechas en formato ISO
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const { descripcion, precioPorKM, laAeronave, fechaInicioDisponibilidad, fechaFinDisponibilidad } = req.body;
+  const {
+    descripcion,
+    precioPorKM,
+    laAeronave,
+    fechaInicioDisponibilidad,
+    fechaFinDisponibilidad,
+  } = req.body;
 
   if (fechaInicioDisponibilidad !== undefined && !ISO_DATE_REGEX.test(fechaInicioDisponibilidad)) {
     throw new BadRequestError('El formato de fecha de inicio de disponibilidad no es válido.');
@@ -22,7 +28,8 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     aeronaveID: laAeronave !== undefined ? Number(laAeronave) : undefined,
     fechaInicioDisponibilidad:
       fechaInicioDisponibilidad !== undefined ? new Date(fechaInicioDisponibilidad) : undefined,
-    fechaFinDisponibilidad: fechaFinDisponibilidad !== undefined ? new Date(fechaFinDisponibilidad) : undefined,
+    fechaFinDisponibilidad:
+      fechaFinDisponibilidad !== undefined ? new Date(fechaFinDisponibilidad) : undefined,
   };
 
   Object.keys(sanitizedInput).forEach((key) => {
@@ -52,7 +59,10 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     throw new BadRequestError('La fecha de inicio de disponibilidad no es válida.');
   }
 
-  if (sanitizedInput.fechaFinDisponibilidad !== undefined && isNaN(sanitizedInput.fechaFinDisponibilidad.getTime())) {
+  if (
+    sanitizedInput.fechaFinDisponibilidad !== undefined &&
+    isNaN(sanitizedInput.fechaFinDisponibilidad.getTime())
+  ) {
     throw new BadRequestError('La fecha de fin de disponibilidad no es válida.');
   }
 
@@ -109,11 +119,19 @@ export function validarActualizarDatos(req: Request, res: Response, next: NextFu
 
 //VALIDA QUE EXISTA LA AERONAVE Y QUE NO TENGA UNA PUBLICACION ASOCIADA
 
-export async function validarAeronaveParaPublicacion(req: Request, res: Response, next: NextFunction) {
+export async function validarAeronaveParaPublicacion(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   try {
     const { aeronaveID } = req.body.sanitizedInput;
 
-    const aeronave = await orm.em.findOne(Aeronave, { id: aeronaveID }, { populate: ['miPublicacion'] });
+    const aeronave = await orm.em.findOne(
+      Aeronave,
+      { id: aeronaveID },
+      { populate: ['miPublicacion'] }
+    );
 
     if (!aeronave) {
       throw new BadRequestError('La aeronave ingresada no existe.');

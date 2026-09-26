@@ -7,12 +7,9 @@ import { ForbiddenError } from '../shared/errors/forbidden.error.js';
 import { RolUsuario } from '../usuario/usuario.entity.js';
 
 //SOLO SE ENCARGA DE VERIFICAR EL TOKEN Y LOS ROLES, autenticación/autorización.
+//NO SE SI PONERLO ACA O EN SHARED
 
-export interface AuthenticatedRequest extends Request {
-  user: JwtPayload; //AuthenticatedRequest tiene todo lo que tiene un Request normal, más lo de jwt el user(id roles)
-}
-
-export function verificarToken(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+export function verificarToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization; //busca en los headers de la peticion HTTP el campo Authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     //si no existe o no empieza con Bearer
@@ -30,12 +27,12 @@ export function verificarToken(req: AuthenticatedRequest, res: Response, next: N
 }
 
 export function verificarRol(...rolesPermitidos: RolUsuario[]) {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     if (!req.user) {
       throw new UnauthorizedError('Usuario no autenticado');
     }
 
-    const tieneRol = req.user.roles.some((rol) => rolesPermitidos.includes(rol));
+    const tieneRol = req.user.roles.some((rol: RolUsuario) => rolesPermitidos.includes(rol));
     if (!tieneRol) {
       throw new ForbiddenError('No tienes permisos para acceder a este recurso');
     }

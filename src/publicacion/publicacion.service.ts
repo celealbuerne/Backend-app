@@ -26,7 +26,11 @@ export class PublicacionService {
   };
 
   getOne = async (id: number) => {
-    const publicacion = await orm.em.findOneOrFail(Publicacion, { id }, { populate: ['laAeronave'] });
+    const publicacion = await orm.em.findOneOrFail(
+      Publicacion,
+      { id },
+      { populate: ['laAeronave'] }
+    );
     return publicacion;
   };
 
@@ -38,35 +42,33 @@ export class PublicacionService {
       fechaFinDisponibilidad: input.fechaFinDisponibilidad,
       descripcion: input.descripcion,
       precioPorKM: input.precioPorKM,
-      imagen: imagen, //recibe de multer
+      imagen: imagen, //recibe de MULTER
       laAeronave: aeronave,
     });
     await orm.em.flush();
     return nuevaPublicacion;
   };
 
+  //-----REVISAR NO ESTA TERMINADA-----// no compara nada todavia
+
   updateOne = async (id: number, input: UpdatePublicacionDTO, imagen?: string) => {
     const publicacion = await orm.em.findOne(Publicacion, { id });
     if (!publicacion) throw new BadRequestError('La publicacion ingresada no existe');
     /* Si se modifican las fechas, verificamos que no haya
         // reservas activas que queden fuera del nuevo período */
-    if (input.fechaInicioDisponibilidad !== undefined || input.fechaFinDisponibilidad !== undefined) {
-      const nuevaFechaInicio = input.fechaInicioDisponibilidad ?? publicacion.fechaInicioDisponibilidad;
+    if (
+      input.fechaInicioDisponibilidad !== undefined ||
+      input.fechaFinDisponibilidad !== undefined
+    ) {
+      const nuevaFechaInicio =
+        input.fechaInicioDisponibilidad ?? publicacion.fechaInicioDisponibilidad;
 
       const nuevaFechaFin = input.fechaFinDisponibilidad ?? publicacion.fechaFinDisponibilidad;
 
       const reservasActivas = await orm.em.find(Reserva, {
-        publicacion: { id },
+        laPublicacion: { id },
         estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
       });
-
-      for (const reserva of reservasActivas) {
-        if (reserva.fechaInicio < nuevaFechaInicio || reserva.fechaFin > nuevaFechaFin) {
-          throw new BadRequestError(
-            'No se puede modificar la disponibilidad porque existen reservas fuera del nuevo período'
-          );
-        }
-      }
     }
 
     orm.em.assign(publicacion, input as EntityData<Publicacion>);
@@ -82,12 +84,14 @@ export class PublicacionService {
     if (!publicacion) throw new BadRequestError('La publicacion ingresada no existe');
 
     const reservasActivas = await orm.em.find(Reserva, {
-      publicacion: { id },
+      laPublicacion: { id },
       estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
     });
 
     if (reservasActivas.length > 0) {
-      throw new BadRequestError('No se puede eliminar la publicación porque tiene reservas activas o pendientes');
+      throw new BadRequestError(
+        'No se puede eliminar la publicación porque tiene reservas activas o pendientes'
+      );
     }
 
     orm.em.remove(publicacion);

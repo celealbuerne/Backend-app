@@ -2,6 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { isDate } from 'util/types';
 import { CreateUsuarioDTO } from './createUsuario.dto.js';
+import { UnauthorizedError } from '../shared/errors/unauthorized.error.js';
+import { ForbiddenError } from '../shared/errors/forbidden.error.js';
+import { RolUsuario } from './usuario.entity.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const { estado, nombre, contacto, pais, fechaNacimiento, tipoDocumento, documento } = req.body;
@@ -10,7 +13,9 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   if (Array.isArray(contacto)) {
     sc = contacto.map((c) => String(c).trim()).filter((c) => c.length > 0); // quita vacios
   } else if (contacto !== undefined) {
-    throw new BadRequestError('Los contactos ingresados no son validos o contienen información no admitida.');
+    throw new BadRequestError(
+      'Los contactos ingresados no son validos o contienen información no admitida.'
+    );
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {
@@ -52,5 +57,20 @@ export function validarCrearDatos(req: Request, res: Response, next: NextFunctio
       throw new BadRequestError('El campo ' + campo + ' es obligatorio.');
     }
   }
+  next();
+}
+
+export function esDueñoOAdmin(req: Request, res: Response, next: NextFunction) {
+  if (!req.user) {
+    throw new UnauthorizedError('Usuario no autenticado');
+  }
+
+  const esDueño = req.user.id === Number(req.params.id); //quien hace la peticion → req.user.Que usuario quiere modificar/ver → req.params.id
+  const esAdmin = req.user.roles.includes(RolUsuario.ADMIN);
+
+  if (!esDueño && !esAdmin) {
+    throw new ForbiddenError('No podés acceder a datos de otro usuario');
+  }
+
   next();
 }

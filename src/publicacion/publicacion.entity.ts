@@ -24,7 +24,7 @@ export class Publicacion extends BaseEntity {
   @OneToOne(() => Aeronave, { inversedBy: 'miPublicacion' })
   laAeronave!: Aeronave;
 
-  @OneToMany(() => Reserva, (reserva) => reserva.publicacion)
+  @OneToMany(() => Reserva, (reserva) => reserva.laPublicacion)
   reservas = new Collection<Reserva>(this);
 
   //NO IRIA PQ PUBLI SE REALACIONA CON AERONAVE, Q AERONAVE SE RELACIONA CON USUARIO/PROVEEDOR REVISAR MD

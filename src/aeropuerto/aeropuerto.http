@@ -8,7 +8,7 @@ Content-Type: application/json
 {
     "nombre": "Aeropuerto Internacional de Ezeiza",
     "codigo": "EZE",
-    "localidadNombre": "Rosario"
+    "localidadNombre": 1
 
 }
 
