@@ -1,35 +1,58 @@
+### ==============================================================================
+### AUTENTICACIÓN ADMIN (Ejecutar para obtener y propagar el token a las otras peticiones)
+### ==============================================================================
+
+### 1. REGISTER ADMIN (Ejecutar UNA SOLA VEZ para crearlo)
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{
+  "nombre": "Administrador General",
+  "nombreUsuario": "admin",
+  "pais": "Argentina",
+  "fechaNacimiento": "1990-01-01",
+  "tipoDocumento": "DNI",
+  "documento": 11111111,
+  "contraseña": "admin123",
+  "rol": "ADMIN"
+}
+
+### 2. LOGIN ADMIN (Captura automáticamente el token y el ID de la respuesta)
+# @name loginAdmin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "admin",
+  "contraseña": "admin123"
+}
+
+### VARIABLES EXTRAÍDAS DEL LOGIN
+@token = {{loginAdmin.response.body.data.token}}
+@id = {{loginAdmin.response.body.data.usuario.id}}
+
+### CRUD DE USUARIOS (Usa el token del admin)
+
 ### GET ALL
 GET http://localhost:3000/api/usuarios
+Authorization: Bearer {{token}}
 
-### SAVE  <----- no se usa mas, va el auth 
-POST http://localhost:3000/api/usuarios
+@idget = 2
+
+### GET ONE (Dueño o admin)
+GET http://localhost:3000/api/usuarios/{{idget}}
+Authorization: Bearer {{token}}
+
+### UPDATE (PATCH)
+PATCH http://localhost:3000/api/usuarios/{{idget}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "carlos",
-  "pais": "Argentina",
-  "tipoDocumento": "DNI",
-  "documento": 12345678,
-  "fechaNacimiento": "1970-05-15",
-  "contacto": ["carlosxd@example.com", "+5491112345678"]
+  "nombre": "Admin Modificado",
+  "pais": "Grecia"
 }
 
-
-###ID
-@id = 10
-
-### GET ONE
-GET http://localhost:3000/api/usuarios/{{id}}
-
-### UPDATE
-PATCH http://localhost:3000/api/usuarios/{{id}}
-Content-Type: application/json
-
-{
-  "nombre": "Hola",
-  "pais": "Argentina",
-  "contacto": ["yosoyyuri@lol.rer"]
-}
-
-### DELETE
+### DELETE (Admin)
 DELETE http://localhost:3000/api/usuarios/{{id}}
+Authorization: Bearer {{token}}

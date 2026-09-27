@@ -1,37 +1,55 @@
-### GET ALL
+### ==============================================================================
+### AUTENTICACIÓN ADMIN (Ejecutar login para propagar el token a las otras peticiones)
+### ==============================================================================
+
+# @name loginAdmin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "admin",
+  "contraseña": "admin123"
+}
+
+### VARIABLES AUTOMÁTICAS
+@token = {{loginAdmin.response.body.data.token}}
+@idProveedor = {{loginAdmin.response.body.data.usuario.id}}
+@id = 1
+
+### CRUD DE AERONAVES
+
+### GET ALL (Público)
 GET http://localhost:3000/api/aeronaves
 
-### SAVE
+### SAVE (Requiere Token de Proveedor o Admin)
 POST http://localhost:3000/api/aeronaves
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "modelo": "avion que si vuela",
-  "fabricante": "yo",
-  "descripcion": "johogwobhwh",
-  "capacidad": 1,
-  "autonomia": 5765,
-  "velocidadMaxima": 2853,
+  "modelo": "Cessna 172 Skyhawk",
+  "fabricante": "Cessna",
+  "descripcion": "Aeronave monomotor de ala alta",
+  "capacidad": 4,
+  "autonomia": 1185,
+  "velocidadMaxima": 226,
   "antiguedad": "2018-05-15T00:00:00.000Z",
-  "miProveedor": 1
+  "miProveedor": {{idProveedor}}
 }
 
-###ID
-@id = 5
-
-### GET ONE
+### GET ONE (Público)
 GET http://localhost:3000/api/aeronaves/{{id}}
 
-### UPDATE
+### UPDATE (Requiere Token de Proveedor o Admin)
 PATCH http://localhost:3000/api/aeronaves/{{id}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "descripcion": "saaaaaaas",
-  "capacidad": 1,
-  "autonomia": 105,
-  "velocidadMaxima": 10
+  "descripcion": "Descripción actualizada",
+  "velocidadMaxima": 230
 }
 
-### DELETE
+### DELETE (Requiere Token de Proveedor o Admin)
 DELETE http://localhost:3000/api/aeronaves/{{id}}
+Authorization: Bearer {{token}}

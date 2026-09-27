@@ -1,0 +1,31 @@
+### ==============================================================================
+### AUTENTICACIÓN ADMIN (Ejecutar login para propagar el token a las demás peticiones)
+### ==============================================================================
+
+# @name loginAdmin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "admin",
+  "contraseña": "admin123"
+}
+
+### VARIABLES AUTOMÁTICAS
+@token = {{loginAdmin.response.body.data.token}}
+@id = 1
+
+### CRUD DE PUBLICACIONES
+
+### GET ALL
+GET http://localhost:3000/api/publicaciones
+
+### GET ONE
+GET http://localhost:3000/api/publicaciones/{{id}}
+
+### MIS PUBLICACIONES POR PROVEEDOR
+GET http://localhost:3000/api/publicaciones/MisPublicaciones/{{id}}
+
+### DELETE
+DELETE http://localhost:3000/api/publicaciones/{{id}}
+Authorization: Bearer {{token}}

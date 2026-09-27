@@ -1,26 +1,43 @@
+### ==============================================================================
+### AUTENTICACIÓN ADMIN (Ejecutar login para propagar el token a las demás peticiones)
+### ==============================================================================
+
+# @name loginAdmin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "admin",
+  "contraseña": "admin123"
+}
+
+### VARIABLES AUTOMÁTICAS
+@token = {{loginAdmin.response.body.data.token}}
+@id = 1
+
+### CRUD DE LOCALIDADES
+
 ### GET ALL
 GET http://localhost:3000/api/localidades
 
 ### SAVE
 POST http://localhost:3000/api/localidades
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-    "pais": "Argentina",
-    "provincia": "Santa Fe",
-    "nombre": "Rosario",
-    "codigoPostal": 2000
+  "pais": "Argentina",
+  "provincia": "Santa Fe",
+  "nombre": "Rosario",
+  "codigoPostal": 2000
 }
-
-###ID
-@id = 1
 
 ### GET ONE
 GET http://localhost:3000/api/localidades/{{id}}
 
-### UPDATE
-
+### UPDATE (PUT)
 PUT http://localhost:3000/api/localidades/{{id}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -31,8 +48,8 @@ Content-Type: application/json
 }
 
 ### PATCH
-
 PATCH http://localhost:3000/api/localidades/{{id}}
+Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
@@ -41,3 +58,4 @@ Content-Type: application/json
 
 ### DELETE
 DELETE http://localhost:3000/api/localidades/{{id}}
+Authorization: Bearer {{token}}

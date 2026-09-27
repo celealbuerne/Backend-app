@@ -32,7 +32,9 @@ export function verificarRol(...rolesPermitidos: RolUsuario[]) {
       throw new UnauthorizedError('Usuario no autenticado');
     }
 
-    const tieneRol = req.user.roles.some((rol: RolUsuario) => rolesPermitidos.includes(rol));
+    const esAdmin = req.user.roles.includes(RolUsuario.ADMIN);
+    const tieneRol =
+      esAdmin || req.user.roles.some((rol: RolUsuario) => rolesPermitidos.includes(rol));
     if (!tieneRol) {
       throw new ForbiddenError('No tienes permisos para acceder a este recurso');
     }
