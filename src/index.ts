@@ -11,6 +11,7 @@ import localidadRouter from './localidad/localidad.routes.js';
 import aeropuertoRouter from './aeropuerto/aeropuerto.routes.js';
 import publicacionRouter from './publicacion/publicacion.routes.js';
 import authRouter from './auth/auth.routes.js';
+import path from 'path';
 
 const app = express();
 const PORT = 3000;
@@ -29,6 +30,8 @@ app.use('/api/localidades', localidadRouter);
 app.use('/api/aeropuertos', aeropuertoRouter);
 app.use('/api/publicaciones', publicacionRouter);
 app.use('/api/auth', authRouter);
+//permite acceder desde el navegador a los archivos guardados en la carpeta uploads
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'hola buenas' });
