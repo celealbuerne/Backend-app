@@ -36,9 +36,9 @@ export class PublicacionController {
   saveOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const input = req.body.sanitizedInput;
-      const imagen = req.file!.filename;
-      const aeronave = req.body.aeronave;
-      const nuevaPublicacion = await this.s.saveOne(input, imagen, aeronave);
+      const imagen = `/uploads/publicaciones/${req.file!.filename}`;
+      const proveedorID = Number(req.user.id);
+      const nuevaPublicacion = await this.s.saveOne(input, imagen, proveedorID);
       res.status(201).json({
         mensaje: 'Publicacion creada exitosamente',
         data: nuevaPublicacion,
@@ -87,6 +87,15 @@ export class PublicacionController {
         mensaje: 'Listado mis publicaciones',
         data: publicaciones,
       });
+    } catch (error) {
+      next(error);
+    }
+  };
+//se agrega para mostrar las recientes en el HomePage
+  findByRecientes = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const data = await this.s.findByRecientes();
+      res.status(200).json({ mensaje: 'Publicaciones recientes', data });
     } catch (error) {
       next(error);
     }

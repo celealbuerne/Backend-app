@@ -1,8 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreatePublicacionDTO, UpdatePublicacionDTO } from './publicacion.dto.js';
-import { orm } from '../shared/db/orm.js'; //para la ultima validacion
-import { Aeronave } from '../aeronave/aeronave.entity.js'; //lo mismo
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/; //regex para validar fechas en formato ISO
 
@@ -10,7 +8,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const {
     descripcion,
     precioPorKM,
-    laAeronave,
+    aeronaveID,
     fechaInicioDisponibilidad,
     fechaFinDisponibilidad,
   } = req.body;
@@ -25,8 +23,9 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const sanitizedInput: Record<string, any> = {
     descripcion: descripcion !== undefined ? String(descripcion).trim() : undefined,
     precioPorKM: precioPorKM !== undefined ? Number(precioPorKM) : undefined,
-    aeronaveID: laAeronave !== undefined ? Number(laAeronave) : undefined,
-    fechaInicioDisponibilidad:
+    aeronaveID: aeronaveID !== undefined ? Number(aeronaveID) : undefined,
+    //habria que borrar esto de disponibilidad si no lo usamos
+    fechaInicioDisponibilidad:                                         
       fechaInicioDisponibilidad !== undefined ? new Date(fechaInicioDisponibilidad) : undefined,
     fechaFinDisponibilidad:
       fechaFinDisponibilidad !== undefined ? new Date(fechaFinDisponibilidad) : undefined,
@@ -40,7 +39,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
 
   if (
     sanitizedInput.precioPorKM !== undefined &&
-    (Number.isNaN(sanitizedInput.precioPorKM) || sanitizedInput.precioPorKM <= 0)
+    (Number.isNaN(sanitizedInput.precioPorKM) || sanitizedInput.precioPorKM < 1)
   ) {
     throw new BadRequestError('El valor del precio/KM ingresado no es válido.');
   }
@@ -95,9 +94,9 @@ export function validarCrearPublicacion(req: Request, res: Response, next: NextF
   });
 
   // Regla propia de la creacion: no tiene sentido publicar con disponibilidad que ya empezo en el pasado
-  const hoy = new Date();
-  hoy.setHours(0, 0, 0, 0);
-  if (input.fechaInicioDisponibilidad < hoy) {
+  const hoy = new Date().toISOString().split('T')[0]; // AAAA-MM-DD
+  const inicio = input.fechaInicioDisponibilidad.toISOString().slice(0, 10);
+  if (inicio < hoy) {
     throw new BadRequestError('La fecha de inicio de disponibilidad no puede ser anterior a hoy.');
   }
   //PARA LA IMAGEN
@@ -117,33 +116,4 @@ export function validarActualizarDatos(req: Request, res: Response, next: NextFu
   next();
 }
 
-//VALIDA QUE EXISTA LA AERONAVE Y QUE NO TENGA UNA PUBLICACION ASOCIADA
 
-export async function validarAeronaveParaPublicacion(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
-  try {
-    const { aeronaveID } = req.body.sanitizedInput;
-
-    const aeronave = await orm.em.findOne(
-      Aeronave,
-      { id: aeronaveID },
-      { populate: ['miPublicacion'] }
-    );
-
-    if (!aeronave) {
-      throw new BadRequestError('La aeronave ingresada no existe.');
-    }
-
-    if (aeronave.miPublicacion) {
-      throw new BadRequestError('La aeronave ingresada ya tiene una publicación asociada.');
-    }
-    // lo guardamos para no volver a buscarlo en el service
-    req.body.aeronave = aeronave;
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
