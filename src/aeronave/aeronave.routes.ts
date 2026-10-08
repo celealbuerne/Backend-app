@@ -9,7 +9,7 @@ const c = new AeronaveController();
 
 // otros
 
-aeronaveRouter.get('/proveedor/:id', c.getByOwner);
+aeronaveRouter.get('/proveedor/:id', verificarToken, verificarRol(RolUsuario.PROVEEDOR), c.getByProveedor);
 aeronaveRouter.get('/aeropuerto/:id', c.getByAirport);
 
 // CRUD

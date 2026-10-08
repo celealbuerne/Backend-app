@@ -17,6 +17,22 @@ export class AeronaveController {
     }
   };
 
+  getByProveedor = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const proveedorID = Number(req.params.id);
+      if (Number.isNaN(proveedorID)) {
+        throw new NotFoundIDError();
+      }
+      const aeronaves = await this.s.getByProveedor(proveedorID);
+      res.status(200).json({
+        mensaje: 'aeronaves del proveedor',
+        data: aeronaves,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   getOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);

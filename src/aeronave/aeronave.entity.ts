@@ -2,6 +2,7 @@ import { /*Collection*/ Entity, ManyToOne, Property, OneToOne } from '@mikro-orm
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
 import { Publicacion } from '../publicacion/publicacion.entity.js';
+import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 
 @Entity()
 export class Aeronave extends BaseEntity {
@@ -31,6 +32,10 @@ export class Aeronave extends BaseEntity {
 
   @OneToOne(() => Publicacion, (publicacion) => publicacion.laAeronave)
   miPublicacion?: Publicacion;
+//se agrego para poder poner la info del aeropuerto en el que esta la aeronave 
+//revisar si realmente necesitamos el inversedBy, osea si tambien mostramos las aeronaves por aeropuerto
+  @ManyToOne(() => Aeropuerto, {inversedBy: 'aeronavesAlojadas',}) 
+  elAeropuerto: Aeropuerto;
 
   constructor(
     _modelo: string,
@@ -40,6 +45,7 @@ export class Aeronave extends BaseEntity {
     _velocidadMaxima: number,
     _antiguedad: Date,
     _miProveedor: Usuario,
+    _elAeropuerto: Aeropuerto,
     _descripcion: string = ''
   ) {
     super();
@@ -50,6 +56,7 @@ export class Aeronave extends BaseEntity {
     this.velocidadMaxima = _velocidadMaxima;
     this.antiguedad = _antiguedad;
     this.miProveedor = _miProveedor;
+    this.elAeropuerto = _elAeropuerto;
     if (_descripcion) {
       this.descripcion = _descripcion;
     }
@@ -68,6 +75,6 @@ export class Aeronave extends BaseEntity {
   // })
   // aeropuertoActual?: Aeropuerto;
 
-  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)        ONE TO ONE X EL MD Y SINO HAY Q CAMBIAR EL MD
+  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)        ONE TO ONE 
   // miPublicacion?: Publicacion;
 }

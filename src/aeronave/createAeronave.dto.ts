@@ -7,4 +7,5 @@ export interface CreateAeronaveDTO {
   velocidadMaxima: number;
   antiguedad: Date;
   miProveedor: number;
+  elAeropuerto: number;
 }
