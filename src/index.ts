@@ -31,7 +31,10 @@ app.use('/api/aeropuertos', aeropuertoRouter);
 app.use('/api/publicaciones', publicacionRouter);
 app.use('/api/auth', authRouter);
 //permite acceder desde el navegador a los archivos guardados en la carpeta uploads
-app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
+app.use(
+  '/uploads/publicaciones',
+  express.static(path.join(process.cwd(), 'uploads/publicaciones'))
+);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'hola buenas' });
