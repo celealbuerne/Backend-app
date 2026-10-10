@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { PublicacionController } from './publicacion.controller';
-import * as md from './publicacion.middleware';
+import { PublicacionController } from './publicacion.controller.js';
+import * as md from './publicacion.middleware.js';
 import { uploadImagenPublicacion } from '../shared/middlewares/multer.middleware.js';
 import { verificarToken, verificarRol } from '../auth/auth.middleware.js';
 import { RolUsuario } from '../usuario/usuario.entity.js';
@@ -17,9 +17,9 @@ publicacionRouter.post(
   md.validarCrearPublicacion,
   publicacionController.saveOne
 );
-publicacionRouter.get('/', publicacionController.findAll);
+publicacionRouter.get('/', md.sanitizeFiltros, publicacionController.findAll);
 publicacionRouter.get('/recientes', publicacionController.findByRecientes); 
-publicacionRouter.get('/MisPublicaciones/:proveedorID', publicacionController.findMisPublicaciones);
+publicacionRouter.get('/MisPublicaciones',verificarToken, verificarRol(RolUsuario.PROVEEDOR), publicacionController.findMisPublicaciones);
 publicacionRouter.get('/:id', publicacionController.getOne);
 publicacionRouter.put(
   '/:id',

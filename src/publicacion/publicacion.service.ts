@@ -7,11 +7,11 @@ import { Aeronave } from '../aeronave/aeronave.entity.js';
 import { Reserva } from '../reserva/reserva.entity.js';
 import { EstadoReserva } from '../reserva/reserva.entity.js';
 
-const LIMITE_POR_DEFECTO = 4;
+const LIMITE_POR_DEFECTO = 10;
 
 export class PublicacionService {
   //Con filtro por precio y ademas no se ven las q estan "vencidas" <--- Revisar si es util lo de "vencidas"
-  findAll = async (precioMax?: number, precioMin?: number) => {
+  findAll = async (precioMin?: number, precioMax?: number) => {
     const filtro: any = { fechaFinDisponibilidad: { $gte: new Date() } };
     if (precioMax !== undefined || precioMin !== undefined) {
       filtro.precioPorKM = {};
@@ -23,8 +23,8 @@ export class PublicacionService {
         filtro.precioPorKM.$gte = precioMin;
       }
     }
-    const publicaciones = await orm.em.find(Publicacion, filtro, { 
-      populate: ['laAeronave.elAeropuerto']
+    const publicaciones = await orm.em.find(Publicacion, filtro, {
+      populate: ['laAeronave.elAeropuerto'],
       //orderBy: { fechaAlta: 'DESC' },  <--- podria ser para reemplazar lo de destacadas por recientes
     });
     return publicaciones;
@@ -42,39 +42,37 @@ export class PublicacionService {
   //va imagen: string pq el service guarda el nombre de la img
   //se modifico para que aca verifique si la aeronave ya tiene una publicacion asociada, antes estaba en middleware
   saveOne = async (input: CreatePublicacionDTO, imagen: string, proveedorID: number) => {
-  const em = orm.em.fork();
-  const aeronave = await em.findOne(
-    Aeronave,
-    { id: input.aeronaveID },
-    { populate: ['miPublicacion'] }
-  );
-
-  if (!aeronave) {
-    throw new BadRequestError('La aeronave ingresada no existe.');
-  }
-
-  if (aeronave.miProveedor.id !== proveedorID) {
-    throw new BadRequestError('La aeronave no pertenece al proveedor.');
-  }
-
-  if (aeronave.miPublicacion) {
-    throw new BadRequestError(
-      'La aeronave ingresada ya tiene una publicación asociada.'
+    const em = orm.em.fork();
+    const aeronave = await em.findOne(
+      Aeronave,
+      { id: input.aeronaveID },
+      { populate: ['miPublicacion'] }
     );
-  }
 
-  const nuevaPublicacion = em.create(Publicacion, {
-    fechaInicioDisponibilidad: input.fechaInicioDisponibilidad,
-    fechaFinDisponibilidad: input.fechaFinDisponibilidad,
-    descripcion: input.descripcion,
-    precioPorKM: input.precioPorKM,
-    imagen,
-    laAeronave: aeronave,
-  });
+    if (!aeronave) {
+      throw new BadRequestError('La aeronave ingresada no existe.');
+    }
 
-  await em.flush();
-  return nuevaPublicacion;
-};
+    if (aeronave.miProveedor.id !== proveedorID) {
+      throw new BadRequestError('La aeronave no pertenece al proveedor.');
+    }
+
+    if (aeronave.miPublicacion) {
+      throw new BadRequestError('La aeronave ingresada ya tiene una publicación asociada.');
+    }
+
+    const nuevaPublicacion = em.create(Publicacion, {
+      fechaInicioDisponibilidad: input.fechaInicioDisponibilidad,
+      fechaFinDisponibilidad: input.fechaFinDisponibilidad,
+      descripcion: input.descripcion,
+      precioPorKM: input.precioPorKM,
+      imagen,
+      laAeronave: aeronave,
+    });
+
+    await em.flush();
+    return nuevaPublicacion;
+  };
 
   //-----REVISAR NO ESTA TERMINADA-----// no compara nada todavia
 
@@ -139,18 +137,36 @@ export class PublicacionService {
     return publicaciones;
   };
 
-//----------------------------------------------------------------------------------//
-// CLIENTE - busca en vez de destacadas las mas recientes, puse las 4 mas recientes pero revisar si queda bien con la pag
+  //----------------------------------------------------------------------------------//
+  // CLIENTE - busca en vez de destacadas las mas recientes, puse las 4 mas recientes pero revisar si queda bien con la pag
   findByRecientes = async () => {
-    const publicaciones = await orm.em.find(Publicacion,
+    const publicaciones = await orm.em.find(
+      Publicacion,
       {},
-      { 
+      {
         populate: ['laAeronave', 'laAeronave.elAeropuerto'],
-        orderBy: {fechaAlta: 'DESC', id: 'DESC'},
+        orderBy: { fechaAlta: 'DESC', id: 'DESC' },
         limit: LIMITE_POR_DEFECTO,
       }
     );
     return publicaciones;
   };
-
 }
+
+
+{/* prodriamos unir FindAll Y FindByRecientes 
+findAll = async (precioMin?: number, precioMax?: number, limite?: number) => {
+  const filtro: any = { fechaFinDisponibilidad: { $gte: new Date() } };
+  if (precioMax !== undefined || precioMin !== undefined) {
+    filtro.precioPorKM = {};
+    if (precioMax !== undefined) filtro.precioPorKM.$lte = precioMax;
+    if (precioMin !== undefined) filtro.precioPorKM.$gte = precioMin;
+  }
+
+  return orm.em.find(Publicacion, filtro, {
+    populate: ['laAeronave.elAeropuerto'],
+    orderBy: { fechaAlta: 'DESC', id: 'DESC' },
+    ...(limite !== undefined && { limit: limite }),
+  });
+};
+*/}

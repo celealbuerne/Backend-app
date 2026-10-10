@@ -4,8 +4,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "nombreUsuario": "carlos123",
-  "contraseña": "carlos123"
+  "nombreUsuario": "admin@admin.com",
+  "contraseña": "123456"
 }
 
 ### OBTENER EL TOKEN AUTOMATICAMENTE DE LA RESPUESTA
@@ -21,12 +21,12 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "nombre": "Juan",
-  "nombreUsuario": "juan123",
+  "nombre": "todos",
+  "nombreUsuario": "cli@cliente.com",
   "pais": "Argentina",
-  "fechaNacimiento": "1970-05-15",
+  "fechaNacimiento": "1971-04-25",
   "tipoDocumento": "DNI",
-  "documento": 12345678,
-  "contraseña": "carlos123",
-  "rol": "ADMIN"
+  "documento": 22726100,
+  "contraseña": "123456",
+  "rol": "CLIENTE"
 }

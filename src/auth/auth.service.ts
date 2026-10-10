@@ -71,7 +71,7 @@ export class AuthService {
 
     const contraseñaValida = await bcrypt.compare(data.contraseña, usuarioEncontrado.contraseña);
     if (!contraseñaValida) {
-      throw new UnauthorizedError('La contraseña es incorrecta');
+      throw new UnauthorizedError('Credenciales inválidas');
     }
 
     const payload: JwtPayload = {

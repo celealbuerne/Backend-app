@@ -25,7 +25,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     precioPorKM: precioPorKM !== undefined ? Number(precioPorKM) : undefined,
     aeronaveID: aeronaveID !== undefined ? Number(aeronaveID) : undefined,
     //habria que borrar esto de disponibilidad si no lo usamos
-    fechaInicioDisponibilidad:                                         
+    fechaInicioDisponibilidad:
       fechaInicioDisponibilidad !== undefined ? new Date(fechaInicioDisponibilidad) : undefined,
     fechaFinDisponibilidad:
       fechaFinDisponibilidad !== undefined ? new Date(fechaFinDisponibilidad) : undefined,
@@ -113,6 +113,29 @@ export function validarActualizarDatos(req: Request, res: Response, next: NextFu
     throw new BadRequestError('No se proporcionaron datos para actualizar.');
   }
 
+  next();
+}
+
+export function sanitizeFiltros(req: Request, res: Response, next: NextFunction) {
+  
+  //funcion con objetivo convertir el valor a numero y comprobar que sea valido
+  const aNumero = (valor: unknown, nombre: string) => {
+    if (valor === undefined || valor === '') return undefined;
+    const n = Number(valor);
+    if (!Number.isFinite(n) || n < 0) {
+      throw new BadRequestError(`El valor de ${nombre} no es válido.`);
+    }
+    return n;
+  };
+
+  const precioMin = aNumero(req.query.precioMin, 'precioMin');
+  const precioMax = aNumero(req.query.precioMax, 'precioMax');
+
+  if (precioMin !== undefined && precioMax !== undefined && precioMin > precioMax) {
+    throw new BadRequestError('El precio mínimo no puede ser mayor al máximo.');
+  }
+
+  res.locals.filtros = { precioMin, precioMax };
   next();
 }
 

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { PublicacionService } from './publicacion.service';
+import { PublicacionService } from './publicacion.service.js';
 import { NotFoundIDError } from '../shared/errors/notFound.error.js';
 
 export class PublicacionController {
@@ -7,9 +7,8 @@ export class PublicacionController {
 
   findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const precioMax = req.query.precioMax ? Number(req.query.precioMax) : undefined;
-      const precioMin = req.query.precioMin ? Number(req.query.precioMin) : undefined;
-      const publicaciones = await this.s.findAll(precioMax, precioMin);
+      const { precioMin, precioMax } = res.locals.filtros; //datos disponibles despues del middleware
+      const publicaciones = await this.s.findAll(precioMin, precioMax);
       res.status(200).json({
         mensaje: 'Listado publicaciones',
         data: publicaciones,
@@ -50,7 +49,7 @@ export class PublicacionController {
 
   updateOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = Number(req.params.id);
+      const id = Number(req.params.id); //cambiar por user y revisar en el front
       if (isNaN(id) || id <= 0) throw new NotFoundIDError();
       const input = req.body.sanitizedInput;
       const imagen = req.file?.filename;
@@ -66,7 +65,7 @@ export class PublicacionController {
 
   removeOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = Number(req.params.id);
+      const id = Number(req.params.id); //cambiar por user y revisar en el front
       if (isNaN(id) || id <= 0) throw new NotFoundIDError();
       const publicacion = await this.s.removeOne(id);
       res.status(200).json({
@@ -80,8 +79,7 @@ export class PublicacionController {
 
   findMisPublicaciones = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const proveedorID = Number(req.params.proveedorID);
-      if (isNaN(proveedorID) || proveedorID <= 0) throw new NotFoundIDError();
+      const proveedorID = Number(req.user.id);
       const publicaciones = await this.s.findMisPublicaciones(proveedorID);
       res.status(200).json({
         mensaje: 'Listado mis publicaciones',
@@ -91,7 +89,7 @@ export class PublicacionController {
       next(error);
     }
   };
-//se agrega para mostrar las recientes en el HomePage
+  //se agrega para mostrar las recientes en el HomePage
   findByRecientes = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await this.s.findByRecientes();
