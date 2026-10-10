@@ -8,17 +8,25 @@ import { orm } from '../shared/db/orm.js';
 
 export class AeronaveService {
   findAll = async () => {
-    const aeronaves = await orm.em.findAll(Aeronave, {populate: ['elAeropuerto']});
+    const aeronaves = await orm.em.findAll(Aeronave, { populate: ['elAeropuerto'] });
     return aeronaves;
   };
-//se agrega para poder identificar aeronaves del proveedor al crear una publicacion
+  //se agrega para poder identificar aeronaves del proveedor al crear una publicacion
   getByProveedor = async (proveedorId: number) => {
-    const aeronaves = await orm.em.find(Aeronave, { miProveedor: proveedorId }, { populate: ['elAeropuerto'] });
+    const aeronaves = await orm.em.find(
+      Aeronave,
+      { miProveedor: proveedorId },
+      { populate: ['elAeropuerto'] }
+    );
     return aeronaves;
   };
 
   getOne = async (id: number) => {
-    const aeronave = await orm.em.findOneOrFail(Aeronave, { id }, { populate: ['miProveedor', 'elAeropuerto'] });
+    const aeronave = await orm.em.findOneOrFail(
+      Aeronave,
+      { id },
+      { populate: ['miProveedor', 'elAeropuerto'] }
+    );
     return aeronave;
   };
 

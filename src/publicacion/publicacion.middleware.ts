@@ -25,7 +25,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     precioPorKM: precioPorKM !== undefined ? Number(precioPorKM) : undefined,
     aeronaveID: aeronaveID !== undefined ? Number(aeronaveID) : undefined,
     //habria que borrar esto de disponibilidad si no lo usamos
-    fechaInicioDisponibilidad:                                         
+    fechaInicioDisponibilidad:
       fechaInicioDisponibilidad !== undefined ? new Date(fechaInicioDisponibilidad) : undefined,
     fechaFinDisponibilidad:
       fechaFinDisponibilidad !== undefined ? new Date(fechaFinDisponibilidad) : undefined,
@@ -115,5 +115,3 @@ export function validarActualizarDatos(req: Request, res: Response, next: NextFu
 
   next();
 }
-
-

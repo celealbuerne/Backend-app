@@ -18,7 +18,7 @@ publicacionRouter.post(
   publicacionController.saveOne
 );
 publicacionRouter.get('/', publicacionController.findAll);
-publicacionRouter.get('/recientes', publicacionController.findByRecientes); 
+publicacionRouter.get('/recientes', publicacionController.findByRecientes);
 publicacionRouter.get('/MisPublicaciones/:proveedorID', publicacionController.findMisPublicaciones);
 publicacionRouter.get('/:id', publicacionController.getOne);
 publicacionRouter.put(

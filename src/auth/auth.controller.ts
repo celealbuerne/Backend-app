@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from './auth.service.js';
-import { UnauthorizedError } from '../shared/errors/unauthorized.error.js';
-import { JwtPayload } from './jwtPayload.interface.js';
+// import { UnauthorizedError } from '../shared/errors/unauthorized.error.js';
+// import { JwtPayload } from './jwtPayload.interface.js';
 
 export class AuthController {
   constructor(private s: AuthService = new AuthService()) {}

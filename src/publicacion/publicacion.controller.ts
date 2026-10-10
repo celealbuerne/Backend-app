@@ -91,7 +91,7 @@ export class PublicacionController {
       next(error);
     }
   };
-//se agrega para mostrar las recientes en el HomePage
+  //se agrega para mostrar las recientes en el HomePage
   findByRecientes = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = await this.s.findByRecientes();

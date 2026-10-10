@@ -32,9 +32,9 @@ export class Aeronave extends BaseEntity {
 
   @OneToOne(() => Publicacion, (publicacion) => publicacion.laAeronave)
   miPublicacion?: Publicacion;
-//se agrego para poder poner la info del aeropuerto en el que esta la aeronave 
-//revisar si realmente necesitamos el inversedBy, osea si tambien mostramos las aeronaves por aeropuerto
-  @ManyToOne(() => Aeropuerto, {inversedBy: 'aeronavesAlojadas',}) 
+  //se agrego para poder poner la info del aeropuerto en el que esta la aeronave
+  //revisar si realmente necesitamos el inversedBy, osea si tambien mostramos las aeronaves por aeropuerto
+  @ManyToOne(() => Aeropuerto, { inversedBy: 'aeronavesAlojadas' })
   elAeropuerto: Aeropuerto;
 
   constructor(
@@ -75,6 +75,6 @@ export class Aeronave extends BaseEntity {
   // })
   // aeropuertoActual?: Aeropuerto;
 
-  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)        ONE TO ONE 
+  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)        ONE TO ONE
   // miPublicacion?: Publicacion;
 }
