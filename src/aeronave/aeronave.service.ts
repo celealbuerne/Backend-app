@@ -8,15 +8,15 @@ import { orm } from '../shared/db/orm.js';
 
 export class AeronaveService {
   findAll = async () => {
-    const aeronaves = await orm.em.findAll(Aeronave, { populate: ['elAeropuerto'] });
+    const aeronaves = await orm.em.findAll(Aeronave, { populate: ['ultimoAeropuerto'] });
     return aeronaves;
   };
   //se agrega para poder identificar aeronaves del proveedor al crear una publicacion
   getByProveedor = async (proveedorId: number) => {
     const aeronaves = await orm.em.find(
       Aeronave,
-      { miProveedor: proveedorId },
-      { populate: ['elAeropuerto'] }
+      { proveedor: proveedorId },
+      { populate: ['ultimoAeropuerto'] }
     );
     return aeronaves;
   };
@@ -25,18 +25,18 @@ export class AeronaveService {
     const aeronave = await orm.em.findOneOrFail(
       Aeronave,
       { id },
-      { populate: ['miProveedor', 'elAeropuerto'] }
+      { populate: ['proveedor', 'ultimoAeropuerto'] }
     );
     return aeronave;
   };
 
   //se agrego para poder identificar aeronaves del proveedor al crear una publicacion
   saveOne = async (input: CreateAeronaveDTO) => {
-    const proveedor = await orm.em.findOne(Usuario, { id: input.miProveedor });
+    const proveedor = await orm.em.findOne(Usuario, { id: input.proveedor });
     if (!proveedor) {
       throw new BadRequestError('El proveedor ingresado no existe.');
     }
-    const aeropuerto = await orm.em.findOne(Aeropuerto, { id: input.elAeropuerto });
+    const aeropuerto = await orm.em.findOne(Aeropuerto, { id: input.ultimoAeropuerto });
     if (!aeropuerto) {
       throw new BadRequestError('El aeropuerto ingresado no existe.');
     }

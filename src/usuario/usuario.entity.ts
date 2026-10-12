@@ -3,6 +3,7 @@ import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
 import { Contacto } from './contacto.entity.js';
 import { Reserva } from '../reserva/reserva.entity.js';
+import { Publicacion } from '../publicacion/publicacion.entity.js';
 
 export enum RolUsuario {
   CLIENTE = 'CLIENTE',
@@ -10,20 +11,24 @@ export enum RolUsuario {
   ADMIN = 'ADMIN',
 }
 
+export enum EstadoUsuario {
+  ACTIVO = 'ACTIVO',
+  SUSPENDIDO = 'SUSPENDIDO',
+}
+
 @Entity()
-export class Usuario extends BaseEntity<'aeronaves'> {
+export class Usuario extends BaseEntity<'aeronaves' | 'estado' | 'roles'> {
   // de momento puede tener varios roles
   @Enum({ items: () => RolUsuario, array: true, default: [RolUsuario.CLIENTE] })
   roles: RolUsuario[] = [RolUsuario.CLIENTE];
 
-  @Property()
-  estado: string = 'activo';
-  //estado: 'activo' | 'inactivo' = 'activo';
+  @Enum({ items: () => EstadoUsuario, default: EstadoUsuario.ACTIVO })
+  estado: EstadoUsuario = EstadoUsuario.ACTIVO;
 
   @Property({ length: 50 })
   nombre: string;
 
-  @Property({ length: 50, unique: true }) //unico para cada usuario, si no podriamos usar mail o algo asi
+  @Property({ length: 50, unique: true })
   nombreUsuario: string;
 
   @Property({ hidden: true })
@@ -44,11 +49,14 @@ export class Usuario extends BaseEntity<'aeronaves'> {
   @Property()
   documento: number;
 
-  @OneToMany({ mappedBy: 'miProveedor' })
+  @OneToMany({ mappedBy: 'proveedor' })
   aeronaves = new Collection<Aeronave>(this);
 
-  @OneToMany({ mappedBy: 'elUsuario' })
+  @OneToMany({ mappedBy: 'cliente' })
   reservas = new Collection<Reserva>(this);
+
+  @OneToMany({ mappedBy: 'proveedor' })
+  publicaciones = new Collection<Publicacion>(this);
 
   constructor(
     _nombre: string,

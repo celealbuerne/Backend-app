@@ -6,6 +6,6 @@ export interface CreateAeronaveDTO {
   autonomia: number;
   velocidadMaxima: number;
   antiguedad: Date;
-  miProveedor: number;
-  elAeropuerto: number;
+  proveedor: number;
+  ultimoAeropuerto: number;
 }

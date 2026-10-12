@@ -2,6 +2,7 @@ import { Entity, Property, ManyToOne, OneToMany, Collection } from '@mikro-orm/c
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Localidad } from '../localidad/localidad.entity.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
+import { Reserva } from '../reserva/reserva.entity.js';
 
 @Entity()
 export class Aeropuerto extends BaseEntity {
@@ -14,18 +15,19 @@ export class Aeropuerto extends BaseEntity {
   @ManyToOne()
   laLocalidad: Localidad;
 
-  @OneToMany(() => Aeronave, (aeronave) => aeronave.elAeropuerto)
-  aeronavesAlojadas = new Collection<Aeronave>(this);
+  @OneToMany({ mappedBy: 'origen' })
+  reservasOrigen = new Collection<Reserva>(this);
 
-  //no se si es realmente necesario q el aeropuerto conozca sus reservas
-  //@OneToMany(() => Reserva, (reserva) => reserva.elAeropuerto)
-  //reservas = new Collection<Reserva>(this);
+  @OneToMany({ mappedBy: 'destino' })
+  reservasDestino = new Collection<Reserva>(this);
+
+  @OneToMany({ mappedBy: 'ultimoAeropuerto' })
+  aeronavesAlojadas = new Collection<Aeronave>(this);
 
   constructor(_nombre: string, _codigo: string, _laLocalidad: Localidad) {
     super();
     this.nombre = _nombre;
     this.codigo = _codigo;
     this.laLocalidad = _laLocalidad;
-    this.aeronavesAlojadas = new Collection<Aeronave>(this);
   }
 }

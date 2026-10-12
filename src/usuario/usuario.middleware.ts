@@ -7,7 +7,7 @@ import { ForbiddenError } from '../shared/errors/forbidden.error.js';
 import { RolUsuario } from './usuario.entity.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const { estado, nombre, contacto, pais, fechaNacimiento, tipoDocumento, documento } = req.body;
+  const { nombre, contacto, pais, fechaNacimiento, tipoDocumento, documento } = req.body;
 
   let sc: string[] | undefined = undefined;
   if (Array.isArray(contacto)) {
@@ -19,7 +19,6 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {
-    estado: estado ? String(estado).trim() : undefined, //
     nombre: nombre ? String(nombre).trim() : undefined,
     contacto: sc,
     pais: pais ? pais : undefined,

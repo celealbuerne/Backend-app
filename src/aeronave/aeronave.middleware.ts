@@ -14,8 +14,8 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     autonomia,
     velocidadMaxima,
     antiguedad,
-    miProveedor,
-    elAeropuerto,
+    proveedor,
+    ultimoAeropuerto,
   } = req.body;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,8 +27,8 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     autonomia: autonomia !== undefined ? Number(autonomia) : undefined,
     velocidadMaxima: velocidadMaxima !== undefined ? Number(velocidadMaxima) : undefined,
     antiguedad: antiguedad ? new Date(antiguedad) : undefined,
-    miProveedor: miProveedor !== undefined ? Number(miProveedor) : undefined,
-    elAeropuerto: elAeropuerto !== undefined ? Number(elAeropuerto) : undefined,
+    proveedor: proveedor !== undefined ? Number(proveedor) : undefined,
+    aeropuertoActual: ultimoAeropuerto !== undefined ? Number(ultimoAeropuerto) : undefined,
   };
   // limpiar claves que hayan quedado undefined O VACIAS
   Object.keys(sanitizedInput).forEach((key) => {
@@ -61,8 +61,8 @@ export function validarCrearDatos(req: Request, res: Response, next: NextFunctio
     'autonomia',
     'velocidadMaxima',
     'antiguedad',
-    'miProveedor',
-    'elAeropuerto',
+    'proveedor',
+    'ultimoAeropuerto',
   ];
   for (const campo of camposObligatorios) {
     if (input[campo] === undefined || input[campo] === null) {

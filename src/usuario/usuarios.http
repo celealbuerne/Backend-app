@@ -37,7 +37,7 @@ Content-Type: application/json
 GET http://localhost:3000/api/usuarios
 Authorization: Bearer {{token}}
 
-@idget = 2
+@idget = 1
 
 ### GET ONE (Dueño o admin)
 GET http://localhost:3000/api/usuarios/{{idget}}

@@ -7,35 +7,34 @@ import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 @Entity()
 export class Aeronave extends BaseEntity {
   @ManyToOne()
-  miProveedor!: Usuario;
+  proveedor: Usuario;
 
   @Property()
-  modelo!: string;
+  modelo: string;
 
   @Property()
-  fabricante!: string;
+  fabricante: string;
 
   @Property({ length: 200 })
   descripcion: string = 'Sin descripcción';
 
   @Property()
-  capacidad!: number;
+  capacidad: number;
 
   @Property()
-  autonomia!: number;
+  autonomia: number;
 
   @Property()
-  velocidadMaxima!: number;
+  velocidadMaxima: number;
 
   @Property()
-  antiguedad!: Date;
+  antiguedad: Date;
 
-  @OneToOne(() => Publicacion, (publicacion) => publicacion.laAeronave)
-  miPublicacion?: Publicacion;
-  //se agrego para poder poner la info del aeropuerto en el que esta la aeronave
-  //revisar si realmente necesitamos el inversedBy, osea si tambien mostramos las aeronaves por aeropuerto
+  @OneToOne({ mappedBy: 'aeronave' })
+  publicacion?: Publicacion;
+
   @ManyToOne(() => Aeropuerto, { inversedBy: 'aeronavesAlojadas' })
-  elAeropuerto: Aeropuerto;
+  ultimoAeropuerto: Aeropuerto;
 
   constructor(
     _modelo: string,
@@ -44,8 +43,8 @@ export class Aeronave extends BaseEntity {
     _autonomia: number,
     _velocidadMaxima: number,
     _antiguedad: Date,
-    _miProveedor: Usuario,
-    _elAeropuerto: Aeropuerto,
+    _proveedor: Usuario,
+    _aeropuertoActual: Aeropuerto,
     _descripcion: string = ''
   ) {
     super();
@@ -55,8 +54,8 @@ export class Aeronave extends BaseEntity {
     this.autonomia = _autonomia;
     this.velocidadMaxima = _velocidadMaxima;
     this.antiguedad = _antiguedad;
-    this.miProveedor = _miProveedor;
-    this.elAeropuerto = _elAeropuerto;
+    this.proveedor = _proveedor;
+    this.ultimoAeropuerto = _aeropuertoActual;
     if (_descripcion) {
       this.descripcion = _descripcion;
     }
@@ -69,12 +68,4 @@ export class Aeronave extends BaseEntity {
   // Revisar en el MD
   // @OneToMany(() => Reserva, (reserva) =>reserva.miAeronave)
   // misReservas: Reserva = new Collection<Reserva>(this)
-
-  // @ManyToOne(() => Aeropuerto, {
-  //   inversedBy: 'aeronavesAlojadas',
-  // })
-  // aeropuertoActual?: Aeropuerto;
-
-  // @OneToMany(() => Publicacion, (publicacion) => publicacion.miAeronave)        ONE TO ONE
-  // miPublicacion?: Publicacion;
 }

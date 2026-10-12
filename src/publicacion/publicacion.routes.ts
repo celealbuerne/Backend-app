@@ -18,8 +18,13 @@ publicacionRouter.post(
   publicacionController.saveOne
 );
 publicacionRouter.get('/', md.sanitizeFiltros, publicacionController.findAll);
-publicacionRouter.get('/recientes', publicacionController.findByRecientes); 
-publicacionRouter.get('/MisPublicaciones',verificarToken, verificarRol(RolUsuario.PROVEEDOR), publicacionController.findMisPublicaciones);
+publicacionRouter.get('/recientes', publicacionController.findByRecientes);
+publicacionRouter.get(
+  '/MisPublicaciones',
+  verificarToken,
+  verificarRol(RolUsuario.PROVEEDOR),
+  publicacionController.findMisPublicaciones
+);
 publicacionRouter.get('/:id', publicacionController.getOne);
 publicacionRouter.put(
   '/:id',

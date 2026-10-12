@@ -21,7 +21,7 @@ export class PublicacionController {
   getOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      if (isNaN(id) || id <= 0) throw new NotFoundIDError();
+      if (Number.isNaN(id) || id <= 0) throw new NotFoundIDError();
       const publicacion = await this.s.getOne(id);
       res.status(200).json({
         mensaje: 'Publicacion encontrada',
@@ -50,7 +50,7 @@ export class PublicacionController {
   updateOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id); //cambiar por user y revisar en el front
-      if (isNaN(id) || id <= 0) throw new NotFoundIDError();
+      if (Number.isNaN(id) || id <= 0) throw new NotFoundIDError();
       const input = req.body.sanitizedInput;
       const imagen = req.file?.filename;
       const publicacion = await this.s.updateOne(id, input, imagen);

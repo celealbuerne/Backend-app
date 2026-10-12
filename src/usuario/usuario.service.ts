@@ -29,8 +29,7 @@ export class UsuarioService {
       fechaNacimiento: input.fechaNacimiento,
       tipoDocumento: input.tipoDocumento,
       documento: input.documento,
-      roles: input.roles ?? [RolUsuario.CLIENTE],
-      estado: input.estado ?? 'activo',
+      roles: input.roles ?? [RolUsuario.CLIENTE], // revisar, depende de si una cuenta puede registrarse directamente con rol != CLIENTE
       contacto: input.contacto ?? [], //<----- (sin revisar) TIRA ERROR, SERIA CONVENIENTE Q CONTACTO NO ESTE COMO CLASE SINO COMO ATRIBUTO
     });
     await orm.em.flush();

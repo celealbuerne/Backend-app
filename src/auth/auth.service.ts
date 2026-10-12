@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { RegisterDTO, LoginDTO } from './auth.dto.js';
-import { RolUsuario } from '../usuario/usuario.entity.js';
+import { EstadoUsuario, RolUsuario } from '../usuario/usuario.entity.js';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { UnauthorizedError } from '../shared/errors/unauthorized.error.js';
 import { JwtPayload } from './jwtPayload.interface.js';
@@ -31,7 +31,6 @@ export class AuthService {
       tipoDocumento: data.tipoDocumento,
       documento: data.documento,
       roles: [data.rol ?? RolUsuario.CLIENTE],
-      estado: 'activo',
       contacto: [],
     });
 
@@ -64,7 +63,7 @@ export class AuthService {
       throw new UnauthorizedError('Credenciales inválidas');
     }
 
-    if (usuarioEncontrado.estado !== 'activo') {
+    if (usuarioEncontrado.estado !== EstadoUsuario.ACTIVO) {
       //solo si usamos el ESTADO (que no se donde lo usamos)
       throw new UnauthorizedError('El usuario se encuentra inactivo.');
     }

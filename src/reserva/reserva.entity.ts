@@ -1,59 +1,61 @@
-import { Entity, Property, ManyToOne, Enum } from '@mikro-orm/core';
+import { Entity, Property, ManyToOne, Enum /*OneToOne*/ } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Usuario } from '../usuario/usuario.entity.js';
 import { Publicacion } from '../publicacion/publicacion.entity.js';
 import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 
 export enum EstadoReserva {
-  PENDIENTE = 'pendiente',
-  CONFIRMADA = 'confirmada',
-  RECHAZADA = 'rechazada',
-  CANCELADA = 'cancelada',
+  PENDIENTE = 'PENDIENTE',
+  CONFIRMADA = 'CONFIRMADA',
+  RECHAZADA = 'RECHAZADA',
+  CANCELADA = 'CANCELADA',
 }
 
 @Entity()
 export class Reserva extends BaseEntity {
-  //SUPONEMOS QUE SOLO SE ALQUILA POR UN DIA
-  //@Property()
-  //fechaInicio: Date;
-
-  //@Property()
-  //fechaFin: Date;
+  @Property()
+  fechaInicio: Date;
 
   @Property()
-  destino: string;
+  fechaFin: Date;
 
   @Property()
   montoTotal: number;
 
   @Enum(() => EstadoReserva)
   estado: EstadoReserva = EstadoReserva.PENDIENTE;
-  //estado: 'pendiente' | 'confirmada' | 'rechazada' = 'pendiente';
+
+  @ManyToOne()
+  origen: Aeropuerto;
+
+  @ManyToOne()
+  destino: Aeropuerto;
+
+  @ManyToOne()
+  cliente: Usuario;
+
+  @ManyToOne()
+  publicacion: Publicacion;
+
   //cancelar reserva seria otro CUU asi q SE DEJA PARA AD
 
-  @ManyToOne(() => Usuario)
-  elUsuario: Usuario;
-
-  @ManyToOne(() => Publicacion)
-  laPublicacion: Publicacion;
-
-  @ManyToOne(() => Aeropuerto)
-  elAeropuerto: Aeropuerto;
+  // @OneToOne()
+  // pago: Pago;
 
   constructor(
-    _destino: string,
+    _destino: Aeropuerto,
+    _origen: Aeropuerto,
     _montoTotal: number,
     _estado: EstadoReserva,
-    _usuario: Usuario,
-    _publicacion: Publicacion,
-    _aeropuerto: Aeropuerto
+    _cliente: Usuario,
+    _publicacion: Publicacion
   ) {
     super();
+    this.origen = _origen;
     this.destino = _destino;
     this.montoTotal = _montoTotal;
     this.estado = _estado;
-    this.elUsuario = _usuario;
-    this.laPublicacion = _publicacion;
-    this.elAeropuerto = _aeropuerto;
+    this.cliente = _cliente;
+    this.publicacion = _publicacion;
   }
 }
