@@ -30,7 +30,7 @@ export class Aeronave extends BaseEntity {
   @Property()
   antiguedad: Date;
 
-  @OneToOne({ mappedBy: 'aeronave' })
+  @OneToOne(() => Publicacion, { mappedBy: 'aeronave' })
   publicacion?: Publicacion;
 
   @ManyToOne(() => Aeropuerto, { inversedBy: 'aeronavesAlojadas' })
@@ -43,7 +43,7 @@ export class Aeronave extends BaseEntity {
     _autonomia: number,
     _velocidadMaxima: number,
     _antiguedad: Date,
-    _proveedor: Usuario,
+    proveedor: Usuario,
     _aeropuertoActual: Aeropuerto,
     _descripcion: string = ''
   ) {
@@ -54,7 +54,7 @@ export class Aeronave extends BaseEntity {
     this.autonomia = _autonomia;
     this.velocidadMaxima = _velocidadMaxima;
     this.antiguedad = _antiguedad;
-    this.proveedor = _proveedor;
+    this.proveedor = proveedor;
     this.ultimoAeropuerto = _aeropuertoActual;
     if (_descripcion) {
       this.descripcion = _descripcion;

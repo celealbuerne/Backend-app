@@ -15,27 +15,27 @@ export class Publicacion extends BaseEntity {
   @Property()
   imagen: string;
 
-  @OneToOne({ inversedBy: 'publicacion' })
+  @OneToOne(() => Aeronave, { inversedBy: 'publicacion', owner: true })
   aeronave: Aeronave;
 
   @OneToMany({ mappedBy: 'publicacion' })
   reservas = new Collection<Reserva>(this);
 
-  @ManyToOne()
+  @ManyToOne(() => Usuario)
   proveedor: Usuario;
 
   constructor(
     _descripcion: string,
     _precioPorKM: number,
     _imagen: string,
-    _aeronave: Aeronave,
-    _proveedor: Usuario
+    aeronave: Aeronave,
+    proveedor: Usuario
   ) {
     super();
     this.descripcion = _descripcion;
     this.precioPorKM = _precioPorKM;
     this.imagen = _imagen;
-    this.aeronave = _aeronave;
-    this.proveedor = _proveedor;
+    this.aeronave = aeronave;
+    this.proveedor = proveedor;
   }
 }
