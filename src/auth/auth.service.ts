@@ -31,7 +31,7 @@ export class AuthService {
       tipoDocumento: data.tipoDocumento,
       documento: data.documento,
       roles: [data.rol ?? RolUsuario.CLIENTE],
-      contacto: [],
+      contacto: data.contacto ?? [],
     });
 
     /* const nuevoUsuario = orm.em.create(Usuario, {

@@ -9,6 +9,7 @@ export interface RegisterDTO {
   documento: number;
   contraseña: string;
   rol: RolUsuario;
+  contacto?: string[];
 }
 
 export interface LoginDTO {

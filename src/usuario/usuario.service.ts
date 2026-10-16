@@ -11,7 +11,7 @@ export class UsuarioService {
   };
 
   getOne = async (id: number) => {
-    const usuario = orm.em.findOneOrFail(Usuario, { id });
+    const usuario = await orm.em.findOneOrFail(Usuario, { id });
     return usuario;
   };
 
@@ -30,13 +30,12 @@ export class UsuarioService {
       tipoDocumento: input.tipoDocumento,
       documento: input.documento,
       roles: input.roles ?? [RolUsuario.CLIENTE], // revisar, depende de si una cuenta puede registrarse directamente con rol != CLIENTE
-      contacto: input.contacto ?? [], //<----- (sin revisar) TIRA ERROR, SERIA CONVENIENTE Q CONTACTO NO ESTE COMO CLASE SINO COMO ATRIBUTO
+      contacto: input.contacto ?? [],
     });
     await orm.em.flush();
     return nuevoUsuario;
   };
 
-  // TODO: separar agregar contactos, asi se estan sobreescribiendo si es patch
   updateOne = async (id: number, input: EntityData<Usuario>) => {
     const usuario = await orm.em.findOneOrFail(Usuario, { id });
     orm.em.assign(usuario, input);

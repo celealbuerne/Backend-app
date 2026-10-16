@@ -11,7 +11,12 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
 
   let sc: string[] | undefined = undefined;
   if (Array.isArray(contacto)) {
-    sc = contacto.map((c) => String(c).trim()).filter((c) => c.length > 0); // quita vacios
+    if (!contacto.every((c) => typeof c === 'string')) {
+      throw new BadRequestError(
+        'Los contactos ingresados no son validos o contienen información no admitida.'
+      );
+    }
+    sc = [...new Set(contacto.map((c) => c.trim()).filter((c) => c.length > 0))]; // quita vacios y duplicados
   } else if (contacto !== undefined) {
     throw new BadRequestError(
       'Los contactos ingresados no son validos o contienen información no admitida.'

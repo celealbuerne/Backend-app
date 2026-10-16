@@ -19,10 +19,25 @@ export function sanitizedInput(req: Request, res: Response, next: NextFunction) 
     documento,
     contraseña,
     rol,
+    contacto,
   } = req.body;
 
   if (fechaNacimiento !== undefined && !ISO_DATE_REGEX.test(fechaNacimiento)) {
     throw new BadRequestError('El formato de fecha de nacimiento no es válido.');
+  }
+
+  let sc: string[] | undefined = undefined;
+  if (Array.isArray(contacto)) {
+    if (!contacto.every((c) => typeof c === 'string')) {
+      throw new BadRequestError(
+        'Los contactos ingresados no son validos o contienen información no admitida.'
+      );
+    }
+    sc = [...new Set(contacto.map((c) => c.trim()).filter((c) => c.length > 0))];
+  } else if (contacto !== undefined) {
+    throw new BadRequestError(
+      'Los contactos ingresados no son validos o contienen información no admitida.'
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -35,6 +50,7 @@ export function sanitizedInput(req: Request, res: Response, next: NextFunction) 
     documento: documento !== undefined ? String(documento).trim() : undefined,
     contraseña: contraseña !== undefined ? String(contraseña) : undefined, // sin trim
     rol: rol !== undefined ? rol : undefined,
+    contacto: sc,
   };
 
   Object.keys(sanitizedInput).forEach((key) => {

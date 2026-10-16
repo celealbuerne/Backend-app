@@ -1,7 +1,6 @@
 import { Collection, Entity, Enum, OneToMany, Property } from '@mikro-orm/core';
 import { BaseEntity } from '../shared/db/baseEntity.entity.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
-import { Contacto } from './contacto.entity.js';
 import { Reserva } from '../reserva/reserva.entity.js';
 import { Publicacion } from '../publicacion/publicacion.entity.js';
 
@@ -17,7 +16,7 @@ export enum EstadoUsuario {
 }
 
 @Entity()
-export class Usuario extends BaseEntity<'aeronaves' | 'estado' | 'roles'> {
+export class Usuario extends BaseEntity<'aeronaves' | 'estado' | 'roles' | 'contacto'> {
   // de momento puede tener varios roles
   @Enum({ items: () => RolUsuario, array: true, default: [RolUsuario.CLIENTE] })
   roles: RolUsuario[] = [RolUsuario.CLIENTE];
@@ -34,8 +33,8 @@ export class Usuario extends BaseEntity<'aeronaves' | 'estado' | 'roles'> {
   @Property({ hidden: true })
   contraseña: string;
 
-  @Property()
-  contacto: Contacto[] = [];
+  @Property({ type: 'json' })
+  contacto: string[] = [];
 
   @Property()
   pais: string;
@@ -78,7 +77,7 @@ export class Usuario extends BaseEntity<'aeronaves' | 'estado' | 'roles'> {
     return this.contacto.length;
   }
 
-  agregarContacto(nuevoContacto: Contacto): boolean {
+  agregarContacto(nuevoContacto: string): boolean {
     if (!this.contacto.includes(nuevoContacto)) {
       this.contacto.push(nuevoContacto);
       return true;

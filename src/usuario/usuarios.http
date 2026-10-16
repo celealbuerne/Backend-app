@@ -14,7 +14,8 @@ Content-Type: application/json
   "tipoDocumento": "DNI",
   "documento": 11111111,
   "contraseña": "admin123",
-  "rol": "ADMIN"
+  "rol": "ADMIN",
+  "contacto": ["sas", "123"]
 }
 
 ### 2. LOGIN ADMIN (Captura automáticamente el token y el ID de la respuesta)
@@ -50,7 +51,8 @@ Content-Type: application/json
 
 {
   "nombre": "Admin Modificado",
-  "pais": "Grecia"
+  "pais": "Grecia",
+  "contacto": ["rer"]
 }
 
 ### DELETE (Admin)

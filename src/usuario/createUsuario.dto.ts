@@ -1,4 +1,3 @@
-import { Contacto } from './contacto.entity.js';
 import { RolUsuario } from './usuario.entity.js';
 
 export interface CreateUsuarioDTO {
@@ -10,5 +9,5 @@ export interface CreateUsuarioDTO {
   tipoDocumento: string;
   documento: number;
   roles?: RolUsuario[];
-  contacto?: Contacto[];
+  contacto?: string[];
 }
