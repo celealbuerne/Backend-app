@@ -13,7 +13,7 @@ export class Aeropuerto extends BaseEntity {
   codigo: string;
 
   @ManyToOne()
-  laLocalidad: Localidad;
+  localidadID: Localidad;
 
   @OneToMany({ mappedBy: 'origen' })
   reservasOrigen = new Collection<Reserva>(this);
@@ -24,10 +24,10 @@ export class Aeropuerto extends BaseEntity {
   @OneToMany({ mappedBy: 'ultimoAeropuerto' })
   aeronavesAlojadas = new Collection<Aeronave>(this);
 
-  constructor(_nombre: string, _codigo: string, _laLocalidad: Localidad) {
+  constructor(_nombre: string, _codigo: string, _localidadID: Localidad) {
     super();
     this.nombre = _nombre;
     this.codigo = _codigo;
-    this.laLocalidad = _laLocalidad;
+    this.localidadID = _localidadID;
   }
 }

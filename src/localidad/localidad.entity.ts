@@ -16,7 +16,7 @@ export class Localidad extends BaseEntity {
   @Property()
   codigoPostal: number;
 
-  @OneToMany({ mappedBy: 'laLocalidad' })
+  @OneToMany({ mappedBy: 'localidadID' })
   aeropuertos = new Collection<Aeropuerto>(this);
 
   constructor(_pais: string, _provincia: string, _nombre: string, _codigoPostal: number) {

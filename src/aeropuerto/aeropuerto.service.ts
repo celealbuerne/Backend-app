@@ -15,12 +15,12 @@ export class AeropuertoService {
       }
       const aeropuertos = await orm.em.find(
         Aeropuerto,
-        { laLocalidad: localidad },
-        { populate: ['laLocalidad'] }
+        { localidadID: localidad },
+        { populate: ['localidadID'] }
       );
       return { localidad, aeropuertos };
     }
-    const aeropuertos = await orm.em.findAll(Aeropuerto, { populate: ['laLocalidad'] });
+    const aeropuertos = await orm.em.findAll(Aeropuerto, { populate: ['localidadID'] });
     return { localidad: null, aeropuertos };
   };
 
@@ -28,7 +28,7 @@ export class AeropuertoService {
     const aeropuerto = await orm.em.findOneOrFail(
       Aeropuerto,
       { id },
-      { populate: ['laLocalidad'] }
+      { populate: ['localidadID'] }
     );
     return aeropuerto;
   };
@@ -43,7 +43,7 @@ export class AeropuertoService {
       //VA ASI PQ DTO DISTINTO DE ENTIDAD
       nombre: input.nombre,
       codigo: input.codigo,
-      laLocalidad: localidad,
+      localidadID: localidad,
     });
     await orm.em.flush();
     return nuevoAeropuerto;

@@ -28,7 +28,7 @@ Content-Type: application/json
 {
   "nombre": "Aeropuerto Internacional de Ezeiza",
   "codigo": "EZE",
-  "localidadNombre": 1
+  "localidadID": 1
 }
 
 ### GET ONE

@@ -3,13 +3,13 @@ import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateAeropuertoDTO } from './createAeropuerto.dto.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const { nombre, codigo, localidadNombre } = req.body;
+  const { nombre, codigo, localidadID } = req.body;
 
   const sanitizedInput: Record<string, any> = {
     //arma un nuevo objeto con los datos que vienen del req.body, pero ya limpiados y convertidos al tipo que queremos
     nombre: nombre ? String(nombre).trim() : undefined,
     codigo: codigo ? String(codigo).trim() : undefined,
-    localidadID: localidadNombre ? Number(localidadNombre) : undefined,
+    localidadID: localidadID ? Number(localidadID) : undefined,
   };
 
   //para limpiar claves que hayan quedado undefined o VACIAS
