@@ -7,24 +7,56 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "nombreUsuario": "admin",
-  "contraseña": "admin123"
+  "nombreUsuario": "ses",
+  "contraseña": "123456"
 }
 
 ### VARIABLES AUTOMÁTICAS
 @token = {{loginAdmin.response.body.data.token}}
-@id = 10
+@id = 5
 
 ### CRUD DE PUBLICACIONES
 
 ### GET ALL
 GET http://localhost:3000/api/publicaciones
 
+### GET ALL con filtros (descripcion, precioMin, precioMax, proveedor)
+GET http://localhost:3000/api/publicaciones?descripcion=vuelo&precioMin=100&precioMax=500
+
+### MIS PUBLICACIONES (proveedor logueado)
+GET http://localhost:3000/api/publicaciones/MisPublicaciones
+Authorization: Bearer {{token}}
+
+### MIS PUBLICACIONES con filtros (prov logueado filtrando dentro de sus publicaciones)
+GET http://localhost:3000/api/publicaciones/MisPublicaciones?descripcion=vuelo&precioMax=300
+Authorization: Bearer {{token}}
+
+### CREATE PUBLICACION (con usuario 1 y aeronave 1)
+POST http://localhost:3000/api/publicaciones
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="descripcion"
+
+Vuelo panorámico con aeronave 1
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="precioPorKM"
+
+250
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="aeronaveID"
+
+4
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="imagen"; filename="test.jpg"
+Content-Type: image/jpeg
+
+< ./test.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
 ### GET ONE
 GET http://localhost:3000/api/publicaciones/{{id}}
-
-### MIS PUBLICACIONES POR PROVEEDOR
-GET http://localhost:3000/api/publicaciones/MisPublicaciones/{{id}}
 
 ### DELETE
 DELETE http://localhost:3000/api/publicaciones/{{id}}

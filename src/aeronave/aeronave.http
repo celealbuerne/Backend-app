@@ -7,8 +7,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "nombreUsuario": "admin",
-  "contraseña": "admin123"
+  "nombreUsuario": "ses",
+  "contraseña": "123456"
 }
 
 ### VARIABLES AUTOMÁTICAS

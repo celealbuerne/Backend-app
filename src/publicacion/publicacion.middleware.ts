@@ -1,39 +1,20 @@
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreatePublicacionDTO, UpdatePublicacionDTO } from './publicacion.dto.js';
-
-//regex para validar fechas en formato ISO
-//const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/;
+import { FilterPublicacionDTO } from './filterPublicacion.dto.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const {
     descripcion,
     precioPorKM,
     aeronaveID,
-    /*
-    fechaInicioDisponibilidad,
-    fechaFinDisponibilidad,
-    */
   } = req.body;
-  /*
-  if (fechaInicioDisponibilidad !== undefined && !ISO_DATE_REGEX.test(fechaInicioDisponibilidad)) {
-    throw new BadRequestError('El formato de fecha de inicio de disponibilidad no es válido.');
-  }
-  if (fechaFinDisponibilidad !== undefined && !ISO_DATE_REGEX.test(fechaFinDisponibilidad)) {
-    throw new BadRequestError('El formato de fecha de fin de disponibilidad no es válido.');
-  }
-    */
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {
     descripcion: descripcion !== undefined ? String(descripcion).trim() : undefined,
     precioPorKM: precioPorKM !== undefined ? Number(precioPorKM) : undefined,
     aeronaveID: aeronaveID !== undefined ? Number(aeronaveID) : undefined,
-    /* habria que borrar esto de disponibilidad si no lo usamos
-    fechaInicioDisponibilidad:
-      fechaInicioDisponibilidad !== undefined ? new Date(fechaInicioDisponibilidad) : undefined,
-    fechaFinDisponibilidad:
-      fechaFinDisponibilidad !== undefined ? new Date(fechaFinDisponibilidad) : undefined,
-    */
   };
 
   Object.keys(sanitizedInput).forEach((key) => {
@@ -55,28 +36,6 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   ) {
     throw new BadRequestError('El ID de la aeronave ingresado no es válido.');
   }
-  /*
-  if (
-    sanitizedInput.fechaInicioDisponibilidad !== undefined &&
-    isNaN(sanitizedInput.fechaInicioDisponibilidad.getTime())
-  ) {
-    throw new BadRequestError('La fecha de inicio de disponibilidad no es válida.');
-  }
-
-  if (
-    sanitizedInput.fechaFinDisponibilidad !== undefined &&
-    isNaN(sanitizedInput.fechaFinDisponibilidad.getTime())
-  ) {
-    throw new BadRequestError('La fecha de fin de disponibilidad no es válida.');
-  }
-  if (
-    sanitizedInput.fechaInicioDisponibilidad !== undefined &&
-    sanitizedInput.fechaFinDisponibilidad !== undefined &&
-    sanitizedInput.fechaInicioDisponibilidad >= sanitizedInput.fechaFinDisponibilidad
-  ) {
-    throw new BadRequestError('La fecha de inicio debe ser anterior a la fecha de fin.');
-  }
-  */
 
   req.body.sanitizedInput = sanitizedInput;
   next();
@@ -88,10 +47,6 @@ export function validarCrearPublicacion(req: Request, res: Response, next: NextF
     'descripcion',
     'precioPorKM',
     'aeronaveID',
-    /*
-    'fechaInicioDisponibilidad',
-    'fechaFinDisponibilidad',
-    */
   ];
 
   camposObligatorios.forEach((campo) => {
@@ -99,13 +54,6 @@ export function validarCrearPublicacion(req: Request, res: Response, next: NextF
       throw new BadRequestError(`El campo ${campo} es obligatorio.`);
     }
   });
-  /* Regla propia de la creacion: no tiene sentido publicar con disponibilidad que ya empezo en el pasado
-  const hoy = new Date().toISOString().split('T')[0]; // AAAA-MM-DD
-  const inicio = input.fechaInicioDisponibilidad.toISOString().slice(0, 10);
-  if (inicio < hoy) {
-    throw new BadRequestError('La fecha de inicio de disponibilidad no puede ser anterior a hoy.');
-  }
-  */
   //PARA LA IMAGEN
   if (!req.file) {
     throw new BadRequestError('La imagen es obligatoria.');
@@ -124,7 +72,8 @@ export function validarActualizarDatos(req: Request, res: Response, next: NextFu
 }
 
 export function sanitizeFiltros(req: Request, res: Response, next: NextFunction) {
-  //funcion con objetivo convertir el valor a numero y comprobar que sea valido
+  const { descripcion, precioMin, precioMax, proveedor } = req.query;
+
   const aNumero = (valor: unknown, nombre: string) => {
     if (valor === undefined || valor === '') return undefined;
     const n = Number(valor);
@@ -134,13 +83,34 @@ export function sanitizeFiltros(req: Request, res: Response, next: NextFunction)
     return n;
   };
 
-  const precioMin = aNumero(req.query.precioMin, 'precioMin');
-  const precioMax = aNumero(req.query.precioMax, 'precioMax');
+  const min = aNumero(precioMin, 'precioMin');
+  const max = aNumero(precioMax, 'precioMax');
 
-  if (precioMin !== undefined && precioMax !== undefined && precioMin > precioMax) {
+  if (min !== undefined && max !== undefined && min > max) {
     throw new BadRequestError('El precio mínimo no puede ser mayor al máximo.');
   }
 
-  res.locals.filtros = { precioMin, precioMax };
+  let prov: number | undefined = undefined;
+  if (proveedor !== undefined && proveedor !== '') {
+    prov = Number(proveedor);
+    if (!Number.isFinite(prov)) {
+      throw new BadRequestError('El parámetro proveedor debe ser un ID numérico válido.');
+    }
+  }
+
+  const filtros: FilterPublicacionDTO = {
+    descripcion: descripcion ? String(descripcion).trim() : undefined,
+    precioMin: min,
+    precioMax: max,
+    proveedor: prov,
+  };
+
+  Object.keys(filtros).forEach((key) => {
+    if (filtros[key as keyof FilterPublicacionDTO] === undefined) {
+      delete filtros[key as keyof FilterPublicacionDTO];
+    }
+  });
+
+  res.locals.filtros = filtros;
   next();
 }

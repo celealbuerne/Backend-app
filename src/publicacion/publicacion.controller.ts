@@ -7,8 +7,8 @@ export class PublicacionController {
 
   findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { precioMin, precioMax } = res.locals.filtros; //datos disponibles despues del middleware
-      const publicaciones = await this.s.findAll(precioMin, precioMax);
+      const filtros = res.locals.filtros;
+      const publicaciones = await this.s.findAll(filtros);
       res.status(200).json({
         mensaje: 'Listado publicaciones',
         data: publicaciones,
@@ -80,7 +80,8 @@ export class PublicacionController {
   findMisPublicaciones = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const proveedorID = Number(req.user.id);
-      const publicaciones = await this.s.findMisPublicaciones(proveedorID);
+      const filtros = res.locals.filtros;
+      const publicaciones = await this.s.findMisPublicaciones(proveedorID, filtros);
       res.status(200).json({
         mensaje: 'Listado mis publicaciones',
         data: publicaciones,

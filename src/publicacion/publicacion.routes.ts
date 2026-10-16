@@ -23,6 +23,14 @@ publicacionRouter.get(
   '/MisPublicaciones',
   verificarToken,
   verificarRol(RolUsuario.PROVEEDOR),
+  md.sanitizeFiltros,
+  publicacionController.findMisPublicaciones
+);
+publicacionRouter.get(
+  '/mis-publicaciones', // por las dudas
+  verificarToken,
+  verificarRol(RolUsuario.PROVEEDOR),
+  md.sanitizeFiltros,
   publicacionController.findMisPublicaciones
 );
 publicacionRouter.get('/:id', publicacionController.getOne);

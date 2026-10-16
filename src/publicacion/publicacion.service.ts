@@ -2,6 +2,7 @@ import { Publicacion } from './publicacion.entity.js';
 import { orm } from '../shared/db/orm.js';
 import { EntityData, FilterQuery } from '@mikro-orm/core';
 import { CreatePublicacionDTO, UpdatePublicacionDTO } from './publicacion.dto.js';
+import { FilterPublicacionDTO } from './filterPublicacion.dto.js';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
 import { Reserva } from '../reserva/reserva.entity.js';
@@ -12,33 +13,25 @@ import { EstadoReserva } from '../reserva/reserva.entity.js';
 export class PublicacionService {
   constructor(private LIMITE_POR_DEFECTO: number = 10) {}
 
-  findAll = async (precioMin?: number, precioMax?: number) => {
-    // filtro de precio
+  findAll = async (filtros?: FilterPublicacionDTO) => {
     const where: FilterQuery<Publicacion> = {};
-    if (precioMin !== undefined || precioMax !== undefined) {
-      where.precioPorKM = {
-        ...(precioMin !== undefined && { $gte: precioMin }), // si la primera parte de false, ...false no devuelve nada
-        ...(precioMax !== undefined && { $lte: precioMax }), // si da true, spread de la segunda parte
-      };
-    }
-    /*
-    // const filtro: any = { fechaFinDisponibilidad: { $gte: new Date() } };
 
-    const filtro: Record<string, any> = { };
-    if (precioMax !== undefined || precioMin !== undefined) {
-      filtro.precioPorKM = {};
-
-      if (precioMax !== undefined) {
-        filtro.precioPorKM.$lte = precioMax;
-      }
-      if (precioMin !== undefined) {
-        filtro.precioPorKM.$gte = precioMin;
-      }
+    if (filtros?.descripcion) {
+      where.descripcion = { $like: `%${filtros.descripcion}%` };
     }
-    */
+
+    if (filtros?.precioMin !== undefined || filtros?.precioMax !== undefined) {
+      where.precioPorKM = {};
+      if (filtros.precioMin !== undefined) where.precioPorKM.$gte = filtros.precioMin;
+      if (filtros.precioMax !== undefined) where.precioPorKM.$lte = filtros.precioMax;
+    }
+
+    if (filtros?.proveedor !== undefined) {
+      where.proveedor = filtros.proveedor;
+    }
+
     return await orm.em.find(Publicacion, where, {
-      populate: ['aeronave.ultimoAeropuerto'],
-      //orderBy: { fechaAlta: 'DESC' },  <--- podria ser para reemplazar lo de destacadas por recientes
+      populate: ['aeronave.ultimoAeropuerto', 'proveedor'],
     });
   };
 
@@ -70,14 +63,10 @@ export class PublicacionService {
     }
 
     const nuevaPublicacion = orm.em.create(Publicacion, {
-      /*
-      fechaInicioDisponibilidad: input.fechaInicioDisponibilidad,
-      fechaFinDisponibilidad: input.fechaFinDisponibilidad,
-      */
       descripcion: input.descripcion,
       precioPorKM: input.precioPorKM,
       imagen,
-      aeronave: aeronave,
+      aeronave: aeronave, // la entidad completa? dudoso pero funciona
       proveedor: proveedorID,
     });
 
@@ -85,28 +74,9 @@ export class PublicacionService {
     return nuevaPublicacion;
   };
 
-  //-----REVISAR NO ESTA TERMINADA-----// no compara nada todavia
-
   updateOne = async (id: number, input: UpdatePublicacionDTO, imagen?: string) => {
     const publicacion = await orm.em.findOne(Publicacion, { id });
     if (!publicacion) throw new BadRequestError('La publicacion ingresada no existe');
-    /* Si se modifican las fechas, verificamos que no haya
-    reservas activas que queden fuera del nuevo período 
-    if (
-      input.fechaInicioDisponibilidad !== undefined ||
-      input.fechaFinDisponibilidad !== undefined
-    ) {
-      const nuevaFechaInicio =
-        input.fechaInicioDisponibilidad ?? publicacion.fechaInicioDisponibilidad;
-        
-        const nuevaFechaFin = input.fechaFinDisponibilidad ?? publicacion.fechaFinDisponibilidad;
-        
-        const reservasActivas = await orm.em.find(Reserva, {
-          publicacion: { id },
-          estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
-        });
-      }
-      */
 
     orm.em.assign(publicacion, input as EntityData<Publicacion>);
     if (imagen !== undefined) {
@@ -139,14 +109,12 @@ export class PublicacionService {
   //----------------------------------------------------------------------------------//
 
   // PROVEEDOR
-  //publicaciones del proveedor
-  findMisPublicaciones = async (proveedorID: number) => {
-    const publicaciones = await orm.em.find(
-      Publicacion,
-      { aeronave: { proveedor: proveedorID } },
-      { populate: ['aeronave.ultimoAeropuerto'] }
-    );
-    return publicaciones;
+  // publicaciones del proveedor
+  findMisPublicaciones = async (
+    proveedorID: number,
+    filtros?: Omit<FilterPublicacionDTO, 'proveedor'>
+  ) => {
+    return await this.findAll({ ...filtros, proveedor: proveedorID });
   };
 
   //----------------------------------------------------------------------------------//
@@ -163,23 +131,4 @@ export class PublicacionService {
     );
     return publicaciones;
   };
-}
-
-{
-  /* prodriamos unir FindAll Y FindByRecientes 
-findAll = async (precioMin?: number, precioMax?: number, limite?: number) => {
-  const filtro: any = { fechaFinDisponibilidad: { $gte: new Date() } };
-  if (precioMax !== undefined || precioMin !== undefined) {
-    filtro.precioPorKM = {};
-    if (precioMax !== undefined) filtro.precioPorKM.$lte = precioMax;
-    if (precioMin !== undefined) filtro.precioPorKM.$gte = precioMin;
-  }
-
-  return orm.em.find(Publicacion, filtro, {
-    populate: ['laAeronave.elAeropuerto'],
-    orderBy: { fechaAlta: 'DESC', id: 'DESC' },
-    ...(limite !== undefined && { limit: limite }),
-  });
-};
-*/
 }
