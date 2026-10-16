@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { NotFoundIDError } from '../shared/errors/notFound.error.js';
+import { UnauthorizedError } from '../shared/errors/unauthorized.error.js';
 import { AeronaveService } from './aeronave.service.js';
 
 export class AeronaveController {
@@ -7,9 +8,26 @@ export class AeronaveController {
 
   findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const aeronaves = await this.s.findAll();
+      const filtros = res.locals.filtros;
+      const aeronaves = await this.s.findAll(filtros);
       res.status(200).json({
         mensaje: 'todas las aeronaves',
+        data: aeronaves,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getMisAeronaves = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      if (!req.user) {
+        throw new UnauthorizedError('Usuario no autenticado');
+      }
+      const filtros = res.locals.filtros;
+      const aeronaves = await this.s.getByProveedor(req.user.id, filtros);
+      res.status(200).json({
+        mensaje: 'aeronaves del proveedor logueado',
         data: aeronaves,
       });
     } catch (error) {
@@ -23,7 +41,8 @@ export class AeronaveController {
       if (Number.isNaN(proveedorID)) {
         throw new NotFoundIDError();
       }
-      const aeronaves = await this.s.getByProveedor(proveedorID);
+      const filtros = res.locals.filtros;
+      const aeronaves = await this.s.getByProveedor(proveedorID, filtros);
       res.status(200).json({
         mensaje: 'aeronaves del proveedor',
         data: aeronaves,

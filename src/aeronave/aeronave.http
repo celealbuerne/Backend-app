@@ -18,24 +18,35 @@ Content-Type: application/json
 
 ### CRUD DE AERONAVES
 
-### GET ALL (Público)
+### GET ALL
 GET http://localhost:3000/api/aeronaves
 
-### SAVE (Requiere Token de Proveedor o Admin)
+### GET ALL con filtros (modelo, fabricante, capacidadMin, capacidadMax, proveedor)
+GET http://localhost:3000/api/aeronaves?modelo=Cessna&fabricante=Cessna&capacidadMin=2&capacidadMax=6
+
+### MIS AERONAVES (proveedor logueado)
+GET http://localhost:3000/api/aeronaves/mis-aeronaves
+Authorization: Bearer {{token}}
+
+### MIS AERONAVES con filtros (proveedor logueado)
+GET http://localhost:3000/api/aeronaves/mis-aeronaves?fabricante=Cessna
+Authorization: Bearer {{token}}
+
+### SAVE
 POST http://localhost:3000/api/aeronaves
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
   "modelo": "Cessna 172 Skyhawk",
-  "fabricante": "Cessna",
+  "fabricante": "raro",
   "descripcion": "Aeronave monomotor de ala alta",
   "capacidad": 4,
   "autonomia": 1185,
   "velocidadMaxima": 226,
   "antiguedad": "2018-05-15T00:00:00.000Z",
-  "miProveedor": {{idProveedor}},
-  "elAeropuerto": 1
+  "ultimoAeropuerto": 1,
+  "proveedor": {{idProveedor}}
 }
 
 ### GET BY PROVEEDOR

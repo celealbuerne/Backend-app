@@ -9,16 +9,24 @@ const c = new AeronaveController();
 
 // otros
 
-aeronaveRouter.get(
+aeronaveRouter.get( // este queda para el CU proveedor ve sus aeronaves
+  '/mis-aeronaves',
+  verificarToken,
+  verificarRol(RolUsuario.PROVEEDOR),
+  md.sanitizeFiltros,
+  c.getMisAeronaves
+);
+aeronaveRouter.get( // dejo por compatibilidad
   '/proveedor/:id',
   verificarToken,
   verificarRol(RolUsuario.PROVEEDOR),
+  md.sanitizeFiltros,
   c.getByProveedor
 );
 aeronaveRouter.get('/aeropuerto/:id', c.getByAirport);
 
 // CRUD
-aeronaveRouter.get('/', c.findAll);
+aeronaveRouter.get('/', md.sanitizeFiltros, c.findAll);
 aeronaveRouter.get('/:id', c.getOne);
 aeronaveRouter.post(
   '/',

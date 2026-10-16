@@ -1,24 +1,46 @@
-import { EntityData, RequiredEntityData } from '@mikro-orm/core';
+import { EntityData, FilterQuery, RequiredEntityData } from '@mikro-orm/core';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { Aeronave } from './aeronave.entity.js';
 import { CreateAeronaveDTO } from './createAeronave.dto.js';
+import { FilterAeronaveDTO } from './filterAeronave.dto.js';
 import { Usuario } from '../usuario/usuario.entity.js';
 import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 import { orm } from '../shared/db/orm.js';
 
 export class AeronaveService {
-  findAll = async () => {
-    const aeronaves = await orm.em.findAll(Aeronave, { populate: ['ultimoAeropuerto'] });
+  findAll = async (filtros?: FilterAeronaveDTO) => {
+    // esto puede ser undefined, asi que hay que ir con cuidado
+    const where: FilterQuery<Aeronave> = {};
+
+    if (filtros?.modelo) {
+      where.modelo = { $like: `%${filtros.modelo}%` };
+    }
+
+    if (filtros?.fabricante) {
+      where.fabricante = { $like: `%${filtros.fabricante}%` };
+    }
+
+    if (filtros?.capacidad !== undefined) {
+      where.capacidad = filtros.capacidad;
+    } else if (filtros?.capacidadMin !== undefined || filtros?.capacidadMax !== undefined) {
+      where.capacidad = {};
+      if (filtros.capacidadMin !== undefined) where.capacidad.$gte = filtros.capacidadMin;
+      if (filtros.capacidadMax !== undefined) where.capacidad.$lte = filtros.capacidadMax;
+    }
+
+    if (filtros?.proveedor !== undefined) {
+      where.proveedor = filtros.proveedor;
+    }
+
+    const aeronaves = await orm.em.find(Aeronave, where, {
+      populate: ['ultimoAeropuerto', 'proveedor'], // proveedor puede volar de aca
+    });
     return aeronaves;
   };
-  //se agrega para poder identificar aeronaves del proveedor al crear una publicacion
-  getByProveedor = async (proveedorId: number) => {
-    const aeronaves = await orm.em.find(
-      Aeronave,
-      { proveedor: proveedorId },
-      { populate: ['ultimoAeropuerto'] }
-    );
-    return aeronaves;
+
+  // se agrega para poder identificar aeronaves del proveedor al crear una publicacion o ver sus aeronaves
+  getByProveedor = async (proveedorId: number, filtros?: Omit<FilterAeronaveDTO, 'proveedor'>) => {
+    return await this.findAll({ ...filtros, proveedor: proveedorId });
   };
 
   getOne = async (id: number) => {

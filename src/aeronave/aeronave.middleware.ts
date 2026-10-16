@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateAeronaveDTO } from './createAeronave.dto.js';
+import { FilterAeronaveDTO } from './filterAeronave.dto.js';
 
 // SI NO SE MANDA NADA SE ACTUALIZA EXITOSAMENTE IGUAL, SI SE MANDA CUALQUIER OTRO CAMPO TAMBIEN
 //FALTA VALIDAR ESO
@@ -28,7 +29,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     velocidadMaxima: velocidadMaxima !== undefined ? Number(velocidadMaxima) : undefined,
     antiguedad: antiguedad ? new Date(antiguedad) : undefined,
     proveedor: proveedor !== undefined ? Number(proveedor) : undefined,
-    aeropuertoActual: ultimoAeropuerto !== undefined ? Number(ultimoAeropuerto) : undefined,
+    ultimoAeropuerto: ultimoAeropuerto !== undefined ? Number(ultimoAeropuerto) : undefined,
   };
   // limpiar claves que hayan quedado undefined O VACIAS
   Object.keys(sanitizedInput).forEach((key) => {
@@ -69,5 +70,52 @@ export function validarCrearDatos(req: Request, res: Response, next: NextFunctio
       throw new BadRequestError('El campo ' + campo + ' es obligatorio.');
     }
   }
+  next();
+}
+// ``
+export function sanitizeFiltros(req: Request, res: Response, next: NextFunction) {
+  const { modelo, fabricante, capacidad, capacidadMin, capacidadMax, proveedor } = req.query;
+
+  const aNumero = (valor: unknown, nombre: string) => {
+    if (valor === undefined || valor === '') return undefined;
+    const n = Number(valor);
+    if (!Number.isFinite(n) || n <= 0) {
+      throw new BadRequestError(`El valor de ${nombre} debe ser un número válido mayor a 0.`);
+    }
+    return n;
+  };
+
+  const cap = aNumero(capacidad, 'capacidad');
+  const capMin = aNumero(capacidadMin, 'capacidadMin');
+  const capMax = aNumero(capacidadMax, 'capacidadMax');
+
+  if (capMin !== undefined && capMax !== undefined && capMin > capMax) {
+    throw new BadRequestError('La capacidad mínima no puede ser mayor a la capacidad máxima.');
+  }
+
+  let prov: number | undefined = undefined;
+  if (proveedor !== undefined && proveedor !== '') {
+    prov = Number(proveedor);
+    if (!Number.isFinite(prov) || Number.isNaN(prov)) {
+      throw new BadRequestError('La ID de proveedor debe ser un número válido.');
+    }
+  }
+
+  const filtros: FilterAeronaveDTO = {
+    modelo: modelo ? String(modelo).trim() : undefined,
+    fabricante: fabricante ? String(fabricante).trim() : undefined,
+    capacidad: cap,
+    capacidadMin: capMin,
+    capacidadMax: capMax,
+    proveedor: prov,
+  };
+
+  Object.keys(filtros).forEach((key) => {
+    if (filtros[key as keyof FilterAeronaveDTO] === undefined) {
+      delete filtros[key as keyof FilterAeronaveDTO];
+    }
+  });
+
+  res.locals.filtros = filtros;
   next();
 }
