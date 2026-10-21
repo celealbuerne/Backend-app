@@ -34,7 +34,7 @@ export class Aeronave extends BaseEntity {
   publicacion?: Publicacion;
 
   @ManyToOne(() => Aeropuerto, { inversedBy: 'aeronavesAlojadas' })
-  ultimoAeropuerto: Aeropuerto;
+  ultimoAeropuerto: Aeropuerto;  //por que ultimo aeropuerto??
 
   constructor(
     _modelo: string,

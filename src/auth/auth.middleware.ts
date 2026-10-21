@@ -7,7 +7,6 @@ import { ForbiddenError } from '../shared/errors/forbidden.error.js';
 import { RolUsuario } from '../usuario/usuario.entity.js';
 
 //SOLO SE ENCARGA DE VERIFICAR EL TOKEN Y LOS ROLES, autenticación/autorización.
-//NO SE SI PONERLO ACA O EN SHARED
 
 export function verificarToken(req: Request, res: Response, next: NextFunction) {
   const authHeader = req.headers.authorization; //busca en los headers de la peticion HTTP el campo Authorization

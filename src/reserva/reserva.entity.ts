@@ -48,7 +48,9 @@ export class Reserva extends BaseEntity {
     _montoTotal: number,
     _estado: EstadoReserva,
     _cliente: Usuario,
-    _publicacion: Publicacion
+    _publicacion: Publicacion,
+    _fechaInicio: Date,
+    _fechaFin: Date
   ) {
     super();
     this.origen = _origen;
@@ -57,5 +59,7 @@ export class Reserva extends BaseEntity {
     this.estado = _estado;
     this.cliente = _cliente;
     this.publicacion = _publicacion;
+    this.fechaInicio = _fechaInicio;
+    this.fechaFin = _fechaFin;
   }
 }

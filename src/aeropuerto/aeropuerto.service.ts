@@ -40,7 +40,6 @@ export class AeropuertoService {
     }
 
     const nuevoAeropuerto = orm.em.create(Aeropuerto, {
-      //VA ASI PQ DTO DISTINTO DE ENTIDAD
       nombre: input.nombre,
       codigo: input.codigo,
       localidadID: localidad,

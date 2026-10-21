@@ -1,14 +1,14 @@
 import { EstadoReserva } from './reserva.entity.js';
 
 export interface CreateReservaDTO {
-  destino: string;
-  cliente: number;
+  destino: number;
+  //cliente: number; sale del token
   publicacion: number;
-  aeropuerto: number;
+  origen: number;
   fechaInicio: Date;
   fechaFin: Date;
 }
 
 export interface updateEstadoReservaDTO {
-  estado: EstadoReserva;
+  nuevoEstado: EstadoReserva;
 }

@@ -1,0 +1,103 @@
+@baseUrl = http://localhost:3000/api
+
+### ---------- LOGIN ----------
+# Ajustá nombreUsuario/contraseña a usuarios que existan (uno CLIENTE y uno PROVEEDOR)
+
+# @name loginCliente
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "cliente",
+  "contraseña": "123123"
+}
+
+###
+# @name loginProveedor
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "nombreUsuario": "proveedor",
+  "contraseña": "123123"
+}
+
+###
+# Ajustá la ruta del token a lo que devuelve tu login (por ejemplo data.token o data.accessToken)
+@tokenCliente = {{loginCliente.response.body.data.token}}
+@tokenProveedor = {{loginProveedor.response.body.data.token}}
+
+# Ajustá estos ids a datos reales de tu base
+@publicacionId = 1
+@destinoId = 1
+@reservaId = 1
+
+### ---------- CREAR (cliente) ----------
+
+###  Crear reserva (estado PENDIENTE)
+POST {{baseUrl}}/reservas
+Authorization: Bearer {{tokenCliente}}
+Content-Type: application/json
+
+{
+  "destino": {{destinoId}},
+  "publicacion": {{publicacionId}},
+  "fechaInicio": "2026-11-10",
+  "fechaFin": "2026-11-15"
+}
+
+
+### Con el token del proveedor (solo cliente puede crear)
+POST {{baseUrl}}/reservas
+Authorization: Bearer {{tokenProveedor}}
+Content-Type: application/json
+
+{
+  "destino": {{destinoId}},
+  "publicacion": {{publicacionId}},
+  "fechaInicio": "2027-01-10",
+  "fechaFin": "2027-01-15"
+}
+
+### GET ALL
+### Cliente: solo ve las suyas -
+GET {{baseUrl}}/reservas
+Authorization: Bearer {{tokenCliente}}
+
+### Proveedor: ve las de sus publicaciones 
+GET {{baseUrl}}/reservas
+Authorization: Bearer {{tokenProveedor}}
+
+### Filtro por estado 
+GET {{baseUrl}}/reservas?estado=PENDIENTE
+Authorization: Bearer {{tokenProveedor}}
+
+### GET ONE
+### Cliente dueño 
+GET {{baseUrl}}/reservas/{{reservaId}}
+Authorization: Bearer {{tokenCliente}}
+
+### Proveedor dueño de la publicación 
+GET {{baseUrl}}/reservas/{{reservaId}}
+Authorization: Bearer {{tokenProveedor}}
+
+
+
+### Modificar estado
+PATCH {{baseUrl}}/reservas/{{reservaId}}/estado
+Authorization: Bearer {{tokenProveedor}}
+Content-Type: application/json
+
+{
+  "nuevoEstado": "CONFIRMADA"
+}
+
+### Volver a cambiarla (ya no es PENDIENTE) 
+PATCH {{baseUrl}}/reservas/{{reservaId}}/estado
+Authorization: Bearer {{tokenProveedor}}
+Content-Type: application/json
+
+{
+  "nuevoEstado": "RECHAZADA"
+}
+

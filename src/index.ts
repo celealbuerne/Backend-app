@@ -10,6 +10,7 @@ import usuarioRouter from './usuario/usuario.routes.js';
 import localidadRouter from './localidad/localidad.routes.js';
 import aeropuertoRouter from './aeropuerto/aeropuerto.routes.js';
 import publicacionRouter from './publicacion/publicacion.routes.js';
+import reservaRouter from './reserva/reserva.routes.js';
 import authRouter from './auth/auth.routes.js';
 import path from 'path';
 
@@ -35,6 +36,7 @@ app.use(
   '/uploads/publicaciones',
   express.static(path.join(process.cwd(), 'uploads/publicaciones'))
 );
+app.use('/api/reservas', reservaRouter);
 
 app.get('/', (req: Request, res: Response) => {
   res.send({ message: 'hola buenas' });
