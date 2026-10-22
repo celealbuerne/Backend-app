@@ -35,7 +35,6 @@ export class ReservaService {
  // ADMIN puede ver todo. no entra en los bloques anteriores
     const reservas = await orm.em.find(Reserva, where, {
       populate: [
-
         'origen',
         'destino',
         'cliente',
@@ -89,7 +88,14 @@ export class ReservaService {
       throw new NotFoundIDError('El destino ingresado no existe');
     }
 
-    const origen = publicacion.aeronave.ultimoAeropuerto;
+    const origen = await orm.em.findOne(Aeropuerto, { id: input.origen });
+    if (!origen) {
+      throw new NotFoundIDError('El origen ingresado no existe');
+    }
+
+    if (input.origen === input.destino) {
+      throw new BadRequestError('El origen y el destino no pueden ser el mismo.');
+    }
 
     const montoTotal = 0; //  por definir
 
@@ -147,4 +153,3 @@ export class ReservaService {
     return reserva;
   };
 }
-//supongo que por el momento no vamos a usar REMOVE o por lo menos hasta que no tengamos lo de CANCELAR
