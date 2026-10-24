@@ -61,14 +61,21 @@ export function validarCrearReserva(req: Request, res: Response, next: NextFunct
       throw new BadRequestError(`El campo ${campo} es obligatorio.`);
     }
   });
-
+// verificar bien validaciones de fechas
   if (input.fechaInicio >= input.fechaFin) {
     throw new BadRequestError('La fecha de inicio debe ser anterior a la de fin.');
   }
 
-  const hoy = new Date();
-  hoy.setUTCHours(0, 0, 0, 0);  //verificar
-  if (input.fechaInicio < hoy) {
+  const hoyArgentina = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Argentina/Buenos_Aires',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(new Date());
+  
+  const inicio = input.fechaInicio.toISOString().slice(0, 10);
+
+  if (inicio < hoyArgentina) {
     throw new BadRequestError('La fecha de inicio no puede ser anterior a hoy.');
   }
 

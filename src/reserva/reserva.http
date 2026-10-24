@@ -1,7 +1,6 @@
 @baseUrl = http://localhost:3000/api
 
 ### ---------- LOGIN ----------
-# Ajustá nombreUsuario/contraseña a usuarios que existan (uno CLIENTE y uno PROVEEDOR)
 
 # @name loginCliente
 POST {{baseUrl}}/auth/login
@@ -23,11 +22,9 @@ Content-Type: application/json
 }
 
 ###
-# Ajustá la ruta del token a lo que devuelve tu login (por ejemplo data.token o data.accessToken)
 @tokenCliente = {{loginCliente.response.body.data.token}}
 @tokenProveedor = {{loginProveedor.response.body.data.token}}
 
-# Ajustá estos ids a datos reales de tu base
 @publicacionId = 5
 @destinoId = 1
 @reservaId = 1
