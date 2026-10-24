@@ -26,8 +26,8 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "nombre": "Aeropuerto Internacional de Ezeiza",
-  "codigo": "EZE",
+  "nombre": "Aeropuerto Internacional de Rosario",
+  "codigo": "Rosario",
   "localidadID": 1
 }
 

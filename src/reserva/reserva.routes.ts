@@ -16,6 +16,12 @@ ReservaRouter.get(
 );
 
 ReservaRouter.get(
+  '/disponibilidad/:publicacionID',
+  verificarToken,
+  controller.findFechasOcupadas
+);
+
+ReservaRouter.get(
   '/:id',
   verificarToken,
   verificarRol(RolUsuario.CLIENTE, RolUsuario.PROVEEDOR, RolUsuario.ADMIN), 

@@ -88,16 +88,7 @@ export class ReservaService {
       throw new NotFoundIDError('El destino ingresado no existe');
     }
 
-    const origen = await orm.em.findOne(Aeropuerto, { id: input.origen });
-    if (!origen) {
-      throw new NotFoundIDError('El origen ingresado no existe');
-    }
-
-    if (input.origen === input.destino) {
-      throw new BadRequestError('El origen y el destino no pueden ser el mismo.');
-    }
-
-    const montoTotal = 0; //  por definir
+    const origen = publicacion.aeronave.ultimoAeropuerto;
 
     const solapadas = await orm.em.count(Reserva, {
       publicacion: publicacion.id,
@@ -110,6 +101,13 @@ export class ReservaService {
       throw new BadRequestError('No se puede reservar en esas fechas.');
     }
 
+    const MS_POR_DIA = 1000 * 60 * 60 * 24;
+
+    const cantidadDeDias =
+      Math.round((input.fechaFin.getTime() - input.fechaInicio.getTime()) / MS_POR_DIA) + 1;
+
+    const montoTotal = cantidadDeDias * Number(publicacion.precioPorDia);
+    
     const nuevaReserva = orm.em.create(Reserva, {
       origen,
       destino,
@@ -124,7 +122,30 @@ export class ReservaService {
     await orm.em.flush();
     return nuevaReserva;
   };
-// revisar porque el cliente puede modificar reserva 
+
+  getDisponibilidad = async (publicacionID: number) => {
+    const publicacion = await orm.em.findOne(Publicacion, { id: publicacionID })
+    if (!publicacion) {
+      throw new NotFoundIDError('La publicación ingresada no existe');
+    }
+
+    const reservasOcupadas = await orm.em.find(Reserva, {
+      publicacion: publicacionID,
+      estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
+      fechaFin: { $gte: new Date() }, // ignora las que ya terminaron
+    },
+    {
+      fields: ['fechaInicio', 'fechaFin'],
+      orderBy: { fechaInicio: 'ASC' }, //desde la más antigua hasta la mas reciente
+    }
+  );
+
+    return reservasOcupadas.map((r) => ({
+      fechaInicio: r.fechaInicio,
+      fechaFin: r.fechaFin,
+    }));
+  };
+
   updateEstado = async (id: number, input: updateEstadoReservaDTO, usuarioID: number) => {
     const reserva = await orm.em.findOne(
       Reserva,

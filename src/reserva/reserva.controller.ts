@@ -48,10 +48,33 @@ export class ReservaController {
     }
   };
 
+  findFechasOcupadas = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const publicacionID = Number(req.params.publicacionID);
+      if (!Number.isInteger(publicacionID) || publicacionID <= 0) {
+        throw new BadRequestError('El ID de la publicación ingresado no es válido.');
+      }
+
+      const fechasOcupadas = await this.s.getDisponibilidad(publicacionID);
+      
+      res.status(200).json({
+        mensaje: 'Fechas ocupadas encontradas',
+        data: fechasOcupadas,
+      });
+    } catch (error) {
+      next(error);
+    }
+  };
+
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
+      if (!Number.isInteger(id) || id <= 0) {
+        throw new BadRequestError('El ID de la reserva ingresado no es válido.');
+      }
+
       const input = req.body.sanitizedInput;
+
       const reserva = await this.s.updateEstado(id, input, req.user.id);
       res.status(200).json({
         mensaje: 'Reserva actualizada',

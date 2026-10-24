@@ -5,11 +5,10 @@ import { FilterReservaDTO } from './filterReserva.dto.js'; // ajustá si está e
 import { EstadoReserva } from './reserva.entity.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const { origen, destino, publicacion, fechaInicio, fechaFin, nuevoEstado } = req.body;
+  const { destino, publicacion, fechaInicio, fechaFin, nuevoEstado } = req.body;
 
 
   const sanitizedInput: Record<string, any> = {
-    origen: origen !== undefined ? Number(origen) : undefined,
     destino: destino !== undefined ? Number(destino) : undefined,
     publicacion: publicacion !== undefined ? Number(publicacion) : undefined,
     fechaInicio: fechaInicio !== undefined ? new Date(fechaInicio) : undefined,
@@ -21,13 +20,6 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
       delete sanitizedInput[key];
     }
   });
-
-  if (
-    sanitizedInput.origen !== undefined &&
-    (!Number.isInteger(sanitizedInput.origen) || sanitizedInput.origen <= 0)
-  ) {
-    throw new BadRequestError('El ID del origen ingresado no es válido.');
-  }
 
   if (
     sanitizedInput.destino !== undefined &&
@@ -58,7 +50,6 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
 export function validarCrearReserva(req: Request, res: Response, next: NextFunction) {
   const input = req.body.sanitizedInput;
   const camposObligatorios: (keyof CreateReservaDTO)[] = [
-    'origen',
     'destino',
     'publicacion',
     'fechaInicio',

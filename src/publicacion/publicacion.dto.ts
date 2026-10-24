@@ -1,10 +1,10 @@
 export interface CreatePublicacionDTO {
   descripcion: string;
-  precioPorKM: number;
+  precioPorDia: number;
   aeronaveID: number;
 }
 
 export interface UpdatePublicacionDTO {
   descripcion?: string;
-  precioPorKM?: number;
+  precioPorDia?: number;
 }

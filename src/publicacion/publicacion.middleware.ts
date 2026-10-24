@@ -6,14 +6,14 @@ import { FilterPublicacionDTO } from './filterPublicacion.dto.js';
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const {
     descripcion,
-    precioPorKM,
+    precioPorDia,
     aeronaveID,
   } = req.body;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {
     descripcion: descripcion !== undefined ? String(descripcion).trim() : undefined,
-    precioPorKM: precioPorKM !== undefined ? Number(precioPorKM) : undefined,
+    precioPorDia: precioPorDia !== undefined ? Number(precioPorDia) : undefined,
     aeronaveID: aeronaveID !== undefined ? Number(aeronaveID) : undefined,
   };
 
@@ -24,8 +24,8 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   });
 
   if (
-    sanitizedInput.precioPorKM !== undefined &&
-    (Number.isNaN(sanitizedInput.precioPorKM) || sanitizedInput.precioPorKM < 1)
+    sanitizedInput.precioPorDia !== undefined &&
+    (Number.isNaN(sanitizedInput.precioPorDia) || sanitizedInput.precioPorDia < 1)
   ) {
     throw new BadRequestError('El valor del precio/KM ingresado no es válido.');
   }
@@ -45,7 +45,7 @@ export function validarCrearPublicacion(req: Request, res: Response, next: NextF
   const input = req.body.sanitizedInput;
   const camposObligatorios: (keyof CreatePublicacionDTO)[] = [
     'descripcion',
-    'precioPorKM',
+    'precioPorDia',
     'aeronaveID',
   ];
 

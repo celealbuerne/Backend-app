@@ -10,7 +10,7 @@ export class Publicacion extends BaseEntity {
   descripcion: string;
 
   @Property()
-  precioPorKM: number;
+  precioPorDia: number;
 
   @Property()
   imagen: string;
@@ -26,14 +26,14 @@ export class Publicacion extends BaseEntity {
 
   constructor(
     _descripcion: string,
-    _precioPorKM: number,
+    _precioPorDia: number,
     _imagen: string,
     aeronave: Aeronave,
     proveedor: Usuario
   ) {
     super();
     this.descripcion = _descripcion;
-    this.precioPorKM = _precioPorKM;
+    this.precioPorDia = _precioPorDia;
     this.imagen = _imagen;
     this.aeronave = aeronave;
     this.proveedor = proveedor;

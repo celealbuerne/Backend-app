@@ -28,9 +28,10 @@ Content-Type: application/json
 @tokenProveedor = {{loginProveedor.response.body.data.token}}
 
 # Ajustá estos ids a datos reales de tu base
-@publicacionId = 1
+@publicacionId = 5
 @destinoId = 1
 @reservaId = 1
+@origenId = 2
 
 ### ---------- CREAR (cliente) ----------
 
@@ -40,10 +41,11 @@ Authorization: Bearer {{tokenCliente}}
 Content-Type: application/json
 
 {
+  "origen": {{origenId}},
   "destino": {{destinoId}},
   "publicacion": {{publicacionId}},
-  "fechaInicio": "2026-11-10",
-  "fechaFin": "2026-11-15"
+  "fechaInicio": "2028-11-10",
+  "fechaFin": "2028-11-15"
 }
 
 

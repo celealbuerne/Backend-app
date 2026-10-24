@@ -21,9 +21,9 @@ export class PublicacionService {
     }
 
     if (filtros?.precioMin !== undefined || filtros?.precioMax !== undefined) {
-      where.precioPorKM = {};
-      if (filtros.precioMin !== undefined) where.precioPorKM.$gte = filtros.precioMin;
-      if (filtros.precioMax !== undefined) where.precioPorKM.$lte = filtros.precioMax;
+      where.precioPorDia = {};
+      if (filtros.precioMin !== undefined) where.precioPorDia.$gte = filtros.precioMin;
+      if (filtros.precioMax !== undefined) where.precioPorDia.$lte = filtros.precioMax;
     }
 
     if (filtros?.proveedor !== undefined) {
@@ -64,7 +64,7 @@ export class PublicacionService {
 
     const nuevaPublicacion = orm.em.create(Publicacion, {
       descripcion: input.descripcion,
-      precioPorKM: input.precioPorKM,
+      precioPorDia: input.precioPorDia,
       imagen,
       aeronave: aeronave, // la entidad completa? dudoso pero funciona
       proveedor: proveedorID,
