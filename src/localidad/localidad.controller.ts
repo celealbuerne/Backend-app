@@ -20,7 +20,7 @@ export class LocalidadController {
   findOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      if (Number.isNaN(id)) {
+      if (!Number.isInteger(id) || id <= 0) {
         throw new NotFoundIDError();
       }
       const localidad = await this.s.getOne(id);
@@ -48,7 +48,7 @@ export class LocalidadController {
   updateOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      if (Number.isNaN(id)) {
+      if (!Number.isInteger(id) || id <= 0) {
         throw new NotFoundIDError();
       }
       const localidad = await this.s.updateOne(id, req.body.sanitizedInput);
@@ -64,7 +64,7 @@ export class LocalidadController {
   removeOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      if (Number.isNaN(id)) {
+      if (!Number.isInteger(id) || id <= 0) {
         throw new NotFoundIDError();
       }
       await this.s.removeOne(id);

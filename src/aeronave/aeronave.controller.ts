@@ -38,7 +38,7 @@ export class AeronaveController {
   getByProveedor = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const proveedorID = Number(req.params.id);
-      if (Number.isNaN(proveedorID)) {
+      if (!Number.isInteger(proveedorID) || proveedorID <= 0) {
         throw new NotFoundIDError();
       }
       const filtros = res.locals.filtros;
@@ -55,7 +55,7 @@ export class AeronaveController {
   getOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      if (Number.isNaN(id)) {
+      if (!Number.isInteger(id) || id <= 0) {
         throw new NotFoundIDError();
       }
       const aeronave = await this.s.getOne(id);
@@ -82,7 +82,7 @@ export class AeronaveController {
   updateOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-      if (Number.isNaN(id)) {
+      if (!Number.isInteger(id) || id <= 0) {
         throw new NotFoundIDError();
       }
 
@@ -101,7 +101,7 @@ export class AeronaveController {
     try {
       const id = Number(req.params.id);
 
-      if (Number.isNaN(id)) {
+      if (!Number.isInteger(id) || id <= 0) {
         throw new NotFoundIDError();
       }
 
