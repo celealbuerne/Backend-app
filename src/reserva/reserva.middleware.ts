@@ -7,7 +7,6 @@ import { EstadoReserva } from './reserva.entity.js';
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const { destino, publicacion, fechaInicio, fechaFin, nuevoEstado } = req.body;
 
-
   const sanitizedInput: Record<string, any> = {
     destino: destino !== undefined ? Number(destino) : undefined,
     publicacion: publicacion !== undefined ? Number(publicacion) : undefined,
@@ -35,7 +34,10 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     throw new BadRequestError('El ID de la publicación ingresado no es válido.');
   }
 
-  if (sanitizedInput.fechaInicio !== undefined && Number.isNaN(sanitizedInput.fechaInicio.getTime())) {
+  if (
+    sanitizedInput.fechaInicio !== undefined &&
+    Number.isNaN(sanitizedInput.fechaInicio.getTime())
+  ) {
     throw new BadRequestError('La fecha de inicio ingresada no es válida.');
   }
 
@@ -53,7 +55,7 @@ export function validarCrearReserva(req: Request, res: Response, next: NextFunct
     'destino',
     'publicacion',
     'fechaInicio',
-    'fechaFin'
+    'fechaFin',
   ];
 
   camposObligatorios.forEach((campo) => {
@@ -61,7 +63,7 @@ export function validarCrearReserva(req: Request, res: Response, next: NextFunct
       throw new BadRequestError(`El campo ${campo} es obligatorio.`);
     }
   });
-// verificar bien validaciones de fechas
+  // verificar bien validaciones de fechas
   if (input.fechaInicio >= input.fechaFin) {
     throw new BadRequestError('La fecha de inicio debe ser anterior a la de fin.');
   }
@@ -72,7 +74,7 @@ export function validarCrearReserva(req: Request, res: Response, next: NextFunct
     month: '2-digit',
     day: '2-digit',
   }).format(new Date());
-  
+
   const inicio = input.fechaInicio.toISOString().slice(0, 10);
 
   if (inicio < hoyArgentina) {

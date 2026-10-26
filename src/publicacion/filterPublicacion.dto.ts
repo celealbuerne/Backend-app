@@ -4,4 +4,3 @@ export interface FilterPublicacionDTO {
   precioMax?: number;
   proveedor?: number;
 }
-

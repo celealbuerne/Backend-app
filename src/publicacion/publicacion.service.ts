@@ -4,9 +4,9 @@ import { EntityData, FilterQuery } from '@mikro-orm/core';
 import { CreatePublicacionDTO, UpdatePublicacionDTO } from './publicacion.dto.js';
 import { FilterPublicacionDTO } from './filterPublicacion.dto.js';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
+import { NotFoundIDError } from '../shared/errors/notFound.error.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
-import { Reserva } from '../reserva/reserva.entity.js';
-import { EstadoReserva } from '../reserva/reserva.entity.js';
+import { Reserva, EstadoReserva } from '../reserva/reserva.entity.js';
 
 // const LIMITE_POR_DEFECTO = 10;
 
@@ -130,5 +130,30 @@ export class PublicacionService {
       }
     );
     return publicaciones;
+  };
+
+  getDisponibilidad = async (publicacionID: number) => {
+    const publicacion = await orm.em.findOne(Publicacion, { id: publicacionID });
+    if (!publicacion) {
+      throw new NotFoundIDError('La publicación ingresada no existe');
+    }
+
+    const reservasOcupadas = await orm.em.find(
+      Reserva,
+      {
+        publicacion: publicacionID,
+        estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
+        fechaFin: { $gte: new Date() }, // ignora las que ya terminaron
+      },
+      {
+        fields: ['fechaInicio', 'fechaFin'],
+        orderBy: { fechaInicio: 'ASC' }, // desde la más antigua hasta la más reciente
+      }
+    );
+
+    return reservasOcupadas.map((r) => ({
+      fechaInicio: r.fechaInicio,
+      fechaFin: r.fechaFin,
+    }));
   };
 }

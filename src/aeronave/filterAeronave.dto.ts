@@ -6,4 +6,3 @@ export interface FilterAeronaveDTO {
   capacidadMax?: number;
   proveedor?: number;
 }
-

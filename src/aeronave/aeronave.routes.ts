@@ -9,14 +9,16 @@ const c = new AeronaveController();
 
 // otros
 
-aeronaveRouter.get( // este queda para el CU proveedor ve sus aeronaves
+aeronaveRouter.get(
+  // este queda para el CU proveedor ve sus aeronaves
   '/mis-aeronaves',
   verificarToken,
   verificarRol(RolUsuario.PROVEEDOR),
   md.sanitizeFiltros,
   c.getMisAeronaves
 );
-aeronaveRouter.get( // dejo por compatibilidad
+aeronaveRouter.get(
+  // dejo por compatibilidad
   '/proveedor/:id',
   verificarToken,
   verificarRol(RolUsuario.PROVEEDOR),

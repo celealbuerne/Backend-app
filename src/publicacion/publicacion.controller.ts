@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { PublicacionService } from './publicacion.service.js';
 import { NotFoundIDError } from '../shared/errors/notFound.error.js';
+import { BadRequestError } from '../shared/errors/badRequest.error.js';
 
 export class PublicacionController {
   constructor(private s: PublicacionService = new PublicacionService()) {}
@@ -95,6 +96,24 @@ export class PublicacionController {
     try {
       const data = await this.s.findByRecientes();
       res.status(200).json({ mensaje: 'Publicaciones recientes', data });
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  getDisponibilidad = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const id = Number(req.params.id);
+      if (!Number.isInteger(id) || id <= 0) {
+        throw new BadRequestError('El ID de la publicación ingresado no es válido.');
+      }
+
+      const fechasOcupadas = await this.s.getDisponibilidad(id);
+
+      res.status(200).json({
+        mensaje: 'Fechas ocupadas encontradas',
+        data: fechasOcupadas,
+      });
     } catch (error) {
       next(error);
     }

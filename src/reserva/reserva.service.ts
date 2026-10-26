@@ -11,12 +11,7 @@ import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 import { RolUsuario } from '../usuario/usuario.entity.js';
 
 export class ReservaService {
-
-  findAll = async (
-    filtros: FilterReservaDTO,
-    usuarioID: number,
-    rol: RolUsuario
-  ) => {
+  findAll = async (filtros: FilterReservaDTO, usuarioID: number, rol: RolUsuario) => {
     const { estado, cliente, publicacion } = filtros;
 
     const where: FilterQuery<Reserva> = {};
@@ -27,12 +22,11 @@ export class ReservaService {
 
     if (rol === RolUsuario.CLIENTE) {
       where.cliente = usuarioID;
-  
     } else if (rol === RolUsuario.PROVEEDOR) {
       // filtra por proveedor a través de la publicación
       where.publicacion = { proveedor: usuarioID };
     }
- // ADMIN puede ver todo. no entra en los bloques anteriores
+    // ADMIN puede ver todo. no entra en los bloques anteriores
     const reservas = await orm.em.find(Reserva, where, {
       populate: [
         'origen',
@@ -66,7 +60,7 @@ export class ReservaService {
     }
 
     const esCliente = reserva.cliente.id === usuarioID;
-    const esProveedor = reserva.publicacion.proveedor.id === usuarioID; 
+    const esProveedor = reserva.publicacion.proveedor.id === usuarioID;
     if (!esCliente && !esProveedor) {
       throw new ForbiddenError('No tenés permiso para ver esta reserva');
     }
@@ -107,13 +101,13 @@ export class ReservaService {
       Math.round((input.fechaFin.getTime() - input.fechaInicio.getTime()) / MS_POR_DIA) + 1;
 
     const montoTotal = cantidadDeDias * Number(publicacion.precioPorDia);
-    
+
     const nuevaReserva = orm.em.create(Reserva, {
       origen,
       destino,
       montoTotal,
       estado: EstadoReserva.PENDIENTE,
-      cliente: clienteID, 
+      cliente: clienteID,
       publicacion,
       fechaInicio: input.fechaInicio,
       fechaFin: input.fechaFin,
@@ -123,36 +117,13 @@ export class ReservaService {
     return nuevaReserva;
   };
 
-  getDisponibilidad = async (publicacionID: number) => {
-    const publicacion = await orm.em.findOne(Publicacion, { id: publicacionID })
-    if (!publicacion) {
-      throw new NotFoundIDError('La publicación ingresada no existe');
-    }
-
-    const reservasOcupadas = await orm.em.find(Reserva, {
-      publicacion: publicacionID,
-      estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
-      fechaFin: { $gte: new Date() }, // ignora las que ya terminaron
-    },
-    {
-      fields: ['fechaInicio', 'fechaFin'],
-      orderBy: { fechaInicio: 'ASC' }, //desde la más antigua hasta la mas reciente
-    }
-  );
-
-    return reservasOcupadas.map((r) => ({
-      fechaInicio: r.fechaInicio,
-      fechaFin: r.fechaFin,
-    }));
-  };
-
   updateEstado = async (id: number, input: updateEstadoReservaDTO, usuarioID: number) => {
     const reserva = await orm.em.findOne(
       Reserva,
       { id },
       { populate: ['publicacion.proveedor', 'origen', 'destino', 'cliente'] }
     );
-    
+
     if (!reserva || reserva.publicacion.proveedor.id !== usuarioID) {
       throw new NotFoundIDError('La reserva ingresada no existe');
     }
@@ -167,7 +138,6 @@ export class ReservaService {
     ) {
       throw new BadRequestError('El proveedor solo puede confirmar o rechazar la reserva');
     }
-
 
     reserva.estado = input.nuevoEstado;
     await orm.em.flush();

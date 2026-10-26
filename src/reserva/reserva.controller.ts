@@ -1,10 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import { ReservaService } from './reserva.service.js';
+import { PublicacionService } from '../publicacion/publicacion.service.js';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 
-
 export class ReservaController {
-  constructor(private s: ReservaService = new ReservaService()) {}
+  constructor(
+    private s: ReservaService = new ReservaService(),
+    private publicacionService: PublicacionService = new PublicacionService()
+  ) {}
 
   findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -22,9 +25,9 @@ export class ReservaController {
   getOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = Number(req.params.id);
-        if (!Number.isInteger(id) || id <= 0) {
-          throw new BadRequestError('El ID de la reserva ingresado no es válido.');
-        }
+      if (!Number.isInteger(id) || id <= 0) {
+        throw new BadRequestError('El ID de la reserva ingresado no es válido.');
+      }
       const reserva = await this.s.getOne(id, req.user.id);
       res.status(200).json({
         mensaje: 'Reserva encontrada',
@@ -48,6 +51,7 @@ export class ReservaController {
     }
   };
 
+  // se mantiene por compatibilidad, la lógica se movió a PublicacionService
   findFechasOcupadas = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const publicacionID = Number(req.params.publicacionID);
@@ -55,8 +59,8 @@ export class ReservaController {
         throw new BadRequestError('El ID de la publicación ingresado no es válido.');
       }
 
-      const fechasOcupadas = await this.s.getDisponibilidad(publicacionID);
-      
+      const fechasOcupadas = await this.publicacionService.getDisponibilidad(publicacionID);
+
       res.status(200).json({
         mensaje: 'Fechas ocupadas encontradas',
         data: fechasOcupadas,

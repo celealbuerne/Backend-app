@@ -16,6 +16,7 @@ ReservaRouter.get(
 );
 
 ReservaRouter.get(
+  // se deja por compatibilidad usar GET /api/publicaciones/:id/disponibilidad
   '/disponibilidad/:publicacionID',
   verificarToken,
   controller.findFechasOcupadas
@@ -24,7 +25,7 @@ ReservaRouter.get(
 ReservaRouter.get(
   '/:id',
   verificarToken,
-  verificarRol(RolUsuario.CLIENTE, RolUsuario.PROVEEDOR, RolUsuario.ADMIN), 
+  verificarRol(RolUsuario.CLIENTE, RolUsuario.PROVEEDOR, RolUsuario.ADMIN),
   controller.getOne
 );
 

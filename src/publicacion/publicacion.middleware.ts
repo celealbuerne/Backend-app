@@ -4,11 +4,7 @@ import { CreatePublicacionDTO, UpdatePublicacionDTO } from './publicacion.dto.js
 import { FilterPublicacionDTO } from './filterPublicacion.dto.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
-  const {
-    descripcion,
-    precioPorDia,
-    aeronaveID,
-  } = req.body;
+  const { descripcion, precioPorDia, aeronaveID } = req.body;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sanitizedInput: Record<string, any> = {

@@ -33,6 +33,7 @@ publicacionRouter.get(
   md.sanitizeFiltros,
   publicacionController.findMisPublicaciones
 );
+publicacionRouter.get('/:id/disponibilidad', publicacionController.getDisponibilidad);
 publicacionRouter.get('/:id', publicacionController.getOne);
 publicacionRouter.put(
   '/:id',
