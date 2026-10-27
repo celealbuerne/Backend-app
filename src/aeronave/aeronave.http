@@ -7,8 +7,8 @@ POST http://localhost:3000/api/auth/login
 Content-Type: application/json
 
 {
-  "nombreUsuario": "ses",
-  "contraseña": "123456"
+  "nombreUsuario": "proveedor",
+  "contraseña": "123123"
 }
 
 ### VARIABLES AUTOMÁTICAS
@@ -38,13 +38,13 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "modelo": "Cessna 172 Skyhawk",
-  "fabricante": "raro",
-  "descripcion": "Aeronave monomotor de ala alta",
-  "capacidad": 4,
+  "modelo": "Avion ultra",
+  "fabricante": "Honda",
+  "descripcion": "Lorem Ipsum",
+  "capacidad": 15,
   "autonomia": 1185,
-  "velocidadMaxima": 226,
-  "antiguedad": "2018-05-15T00:00:00.000Z",
+  "velocidadMaxima": 400,
+  "antiguedad": "2025-05-15T00:00:00.000Z",
   "ultimoAeropuerto": 1,
   "proveedor": {{idProveedor}}
 }

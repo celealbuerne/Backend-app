@@ -46,7 +46,10 @@ export class PublicacionService {
 
   //va imagen: string pq el service guarda el nombre de la img
   saveOne = async (input: CreatePublicacionDTO, imagen: string, proveedorID: number) => {
-    const aeronave = await orm.em.findOne(
+    //ESTABA CON EL FRONT PERO NO DEJA CREAR PUBLICACIONES TIRA ERROR EN ESTA LINEA POR EL FORK (creo)
+    //correccion temporal (para poder crear las publicaciones)
+    const em = orm.em.fork();
+    const aeronave = await em.findOne(
       Aeronave,
       { id: input.aeronaveID },
       { populate: ['publicacion', 'proveedor'] }
@@ -62,7 +65,7 @@ export class PublicacionService {
       throw new BadRequestError('La aeronave ingresada ya tiene una publicación asociada.');
     }
 
-    const nuevaPublicacion = orm.em.create(Publicacion, {
+    const nuevaPublicacion = em.create(Publicacion, {
       descripcion: input.descripcion,
       precioPorDia: input.precioPorDia,
       imagen,
@@ -70,7 +73,7 @@ export class PublicacionService {
       proveedor: proveedorID,
     });
 
-    await orm.em.flush();
+    await em.flush();
     return nuevaPublicacion;
   };
 
