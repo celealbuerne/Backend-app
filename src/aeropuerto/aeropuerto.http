@@ -20,6 +20,9 @@ Content-Type: application/json
 ### GET ALL
 GET http://localhost:3000/api/aeropuertos
 
+### GET ALL con filtros (nombre, codigo, localidadID, localidadNombre)
+GET http://localhost:3000/api/aeropuertos?nombre=Rosario&codigo=ROS&localidadID=1&localidadNombre=Rosario
+
 ### SAVE
 POST http://localhost:3000/api/aeropuertos
 Authorization: Bearer {{token}}

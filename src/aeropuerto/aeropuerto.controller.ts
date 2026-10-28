@@ -7,7 +7,8 @@ export class AeropuertoController {
 
   findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const aeropuertos = await this.s.findAll();
+      const filtros = res.locals.filtros;
+      const aeropuertos = await this.s.findAll(filtros);
       res.status(200).json({
         mensaje: 'Todos los aeropuertos',
         data: aeropuertos,

@@ -7,7 +7,7 @@ import * as md from './aeropuerto.middleware.js';
 const aeropuertoRouter = Router();
 const aeropuertoController = new AeropuertoController();
 
-aeropuertoRouter.get('/', aeropuertoController.findAll);
+aeropuertoRouter.get('/', md.sanitizeFiltros, aeropuertoController.findAll);
 aeropuertoRouter.get('/:id', aeropuertoController.findOne);
 aeropuertoRouter.post(
   '/',

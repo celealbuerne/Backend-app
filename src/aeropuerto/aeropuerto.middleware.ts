@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateAeropuertoDTO } from './createAeropuerto.dto.js';
+import { FilterAeropuertoDTO } from './filterAeropuerto.dto.js';
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const { nombre, codigo, localidadID } = req.body;
@@ -50,5 +51,38 @@ export function validarActualizarDatos(req: Request, res: Response, next: NextFu
   if (Object.keys(input).length === 0) {
     throw new BadRequestError('No se proporcionaron datos para actualizar.');
   }
+  next();
+}
+
+export function sanitizeFiltros(req: Request, res: Response, next: NextFunction) {
+  const { nombre, codigo, localidadID, localidadNombre, localidad } = req.query;
+
+  let locId: number | undefined = undefined;
+  if (localidadID !== undefined && localidadID !== '') {
+    locId = Number(localidadID);
+    if (!Number.isInteger(locId) || locId <= 0) {
+      throw new BadRequestError('El ID de localidad ingresado no es válido.');
+    }
+  }
+
+  const rawLocNombre = localidadNombre !== undefined ? localidadNombre : localidad;
+
+  const filtros: FilterAeropuertoDTO = {
+    nombre: nombre ? String(nombre).trim() : undefined,
+    codigo: codigo ? String(codigo).trim() : undefined,
+    localidadID: locId,
+    localidadNombre: rawLocNombre ? String(rawLocNombre).trim() : undefined,
+  };
+
+  Object.keys(filtros).forEach((key) => {
+    if (
+      filtros[key as keyof FilterAeropuertoDTO] === undefined ||
+      filtros[key as keyof FilterAeropuertoDTO] === ''
+    ) {
+      delete filtros[key as keyof FilterAeropuertoDTO];
+    }
+  });
+
+  res.locals.filtros = filtros;
   next();
 }
