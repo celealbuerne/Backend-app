@@ -6,11 +6,15 @@ import { orm } from '../shared/db/orm.js';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { NotFoundIDError } from '../shared/errors/notFound.error.js';
 import { ForbiddenError } from '../shared/errors/forbidden.error.js';
-import { Publicacion } from '../publicacion/publicacion.entity.js';
-import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
+import { PublicacionService } from '../publicacion/publicacion.service.js';
+import { AeropuertoService } from '../aeropuerto/aeropuerto.service.js';
 import { RolUsuario } from '../usuario/usuario.entity.js';
 
 export class ReservaService {
+  constructor(
+    private publicacionService: PublicacionService = new PublicacionService(),
+    private aeropuertoService: AeropuertoService = new AeropuertoService()
+  ) {}
   findAll = async (filtros: FilterReservaDTO, usuarioID: number, rol: RolUsuario) => {
     const { estado, cliente, publicacion } = filtros;
 
@@ -67,48 +71,41 @@ export class ReservaService {
     return reserva;
   };
 
-  saveOne = async (input: CreateReservaDTO, clienteID: number) => {
-    const publicacion = await orm.em.findOne(
-      Publicacion,
-      { id: input.publicacion },
-      { populate: ['aeronave.ultimoAeropuerto', 'proveedor'] }
-    );
-    if (!publicacion) {
-      throw new NotFoundIDError('La publicación ingresada no existe');
-    }
+  private calcularMontoTotal = (
+    precioPorDia: number,
+    fechaInicio: Date,
+    fechaFin: Date
+  ): number => {
+    const MS_POR_DIA = 1000 * 60 * 60 * 24;
+    const cantidadDeDias =
+      Math.round((fechaFin.getTime() - fechaInicio.getTime()) / MS_POR_DIA) + 1;
+    return cantidadDeDias * Number(precioPorDia);
+  };
 
-    const destino = await orm.em.findOne(Aeropuerto, { id: input.destino });
-    if (!destino) {
-      throw new NotFoundIDError('El destino ingresado no existe');
-    }
+  saveOne = async (input: CreateReservaDTO, clienteID: number) => {
+    const publicacion = await this.publicacionService.getOne(input.publicacion);
+    const destino = await this.aeropuertoService.getOne(input.destino);
+
+    await this.publicacionService.verificarDisponibilidad(
+      publicacion.id,
+      input.fechaInicio,
+      input.fechaFin
+    );
 
     const origen = publicacion.aeronave.ultimoAeropuerto;
-
-    const solapadas = await orm.em.count(Reserva, {
-      publicacion: publicacion.id,
-      estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
-      fechaInicio: { $lte: input.fechaFin },
-      fechaFin: { $gte: input.fechaInicio },
-    });
-
-    if (solapadas > 0) {
-      throw new BadRequestError('No se puede reservar en esas fechas.');
-    }
-
-    const MS_POR_DIA = 1000 * 60 * 60 * 24;
-
-    const cantidadDeDias =
-      Math.round((input.fechaFin.getTime() - input.fechaInicio.getTime()) / MS_POR_DIA) + 1;
-
-    const montoTotal = cantidadDeDias * Number(publicacion.precioPorDia);
+    const montoTotal = this.calcularMontoTotal(
+      publicacion.precioPorDia,
+      input.fechaInicio,
+      input.fechaFin
+    );
 
     const nuevaReserva = orm.em.create(Reserva, {
-      origen,
-      destino,
-      montoTotal,
+      origen: origen,
+      destino: destino,
+      montoTotal: montoTotal,
       estado: EstadoReserva.PENDIENTE,
       cliente: clienteID,
-      publicacion,
+      publicacion: publicacion,
       fechaInicio: input.fechaInicio,
       fechaFin: input.fechaFin,
     });

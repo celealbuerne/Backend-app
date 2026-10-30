@@ -36,11 +36,14 @@ export class PublicacionService {
   };
 
   getOne = async (id: number) => {
-    const publicacion = await orm.em.findOneOrFail(
+    const publicacion = await orm.em.findOne(
       Publicacion,
       { id },
-      { populate: ['aeronave.ultimoAeropuerto'] }
+      { populate: ['aeronave.ultimoAeropuerto', 'proveedor'] }
     );
+    if (!publicacion) {
+      throw new NotFoundIDError('La publicación ingresada no existe');
+    }
     return publicacion;
   };
 
@@ -136,21 +139,21 @@ export class PublicacionService {
   };
 
   getDisponibilidad = async (publicacionID: number) => {
-    const publicacion = await orm.em.findOne(Publicacion, { id: publicacionID });
-    if (!publicacion) {
-      throw new NotFoundIDError('La publicación ingresada no existe');
-    }
+    await this.getOne(publicacionID);
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
 
     const reservasOcupadas = await orm.em.find(
       Reserva,
       {
         publicacion: publicacionID,
         estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
-        fechaFin: { $gte: new Date() }, // ignora las que ya terminaron
+        fechaFin: { $gte: hoy },
       },
       {
         fields: ['fechaInicio', 'fechaFin'],
-        orderBy: { fechaInicio: 'ASC' }, // desde la más antigua hasta la más reciente
+        orderBy: { fechaInicio: 'ASC' },
       }
     );
 
@@ -158,5 +161,22 @@ export class PublicacionService {
       fechaInicio: r.fechaInicio,
       fechaFin: r.fechaFin,
     }));
+  };
+
+  verificarDisponibilidad = async (publicacionID: number, fechaInicio: Date, fechaFin: Date) => {
+    const solapadas = await orm.em.count(Reserva, {
+      publicacion: publicacionID,
+      estado: { $in: [EstadoReserva.CONFIRMADA, EstadoReserva.PENDIENTE] },
+      fechaInicio: { $lte: fechaFin },
+      fechaFin: { $gte: fechaInicio },
+    });
+    if (solapadas > 0) {
+      throw new BadRequestError('No se puede reservar en esas fechas.');
+      }
+    /*
+    if (solapadas > 0) {
+      throw new BadRequestError(String(solapadas));
+    }
+    */
   };
 }

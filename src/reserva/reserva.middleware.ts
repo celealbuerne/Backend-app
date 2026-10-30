@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateReservaDTO, updateEstadoReservaDTO } from './reserva.dto.js';
-import { FilterReservaDTO } from './filterReserva.dto.js'; // ajustá si está en otro archivo
+import { FilterReservaDTO } from './filterReserva.dto.js'; 
 import { EstadoReserva } from './reserva.entity.js';
+
+function parsearFechaSoloDia(valor: unknown): Date | undefined {
+  if (valor === undefined || valor === '') return undefined;
+  const soloFecha = String(valor).trim().slice(0, 10);
+  return new Date(`${soloFecha}T00:00:00`);
+}
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const { destino, publicacion, fechaInicio, fechaFin, nuevoEstado } = req.body;
@@ -10,8 +16,8 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const sanitizedInput: Record<string, any> = {
     destino: destino !== undefined ? Number(destino) : undefined,
     publicacion: publicacion !== undefined ? Number(publicacion) : undefined,
-    fechaInicio: fechaInicio !== undefined ? new Date(fechaInicio) : undefined,
-    fechaFin: fechaFin !== undefined ? new Date(fechaFin) : undefined,
+    fechaInicio: parsearFechaSoloDia(fechaInicio),
+    fechaFin: parsearFechaSoloDia(fechaFin),
   };
 
   Object.keys(sanitizedInput).forEach((key) => {
@@ -63,21 +69,15 @@ export function validarCrearReserva(req: Request, res: Response, next: NextFunct
       throw new BadRequestError(`El campo ${campo} es obligatorio.`);
     }
   });
-  // verificar bien validaciones de fechas
-  if (input.fechaInicio >= input.fechaFin) {
+  // admite reservas de 1 día
+  if (input.fechaInicio > input.fechaFin) {
     throw new BadRequestError('La fecha de inicio debe ser anterior a la de fin.');
   }
 
-  const hoyArgentina = new Intl.DateTimeFormat('en-CA', {
-    timeZone: 'America/Argentina/Buenos_Aires',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(new Date());
+  const hoy = new Date();
+  hoy.setHours(0, 0, 0, 0);
 
-  const inicio = input.fechaInicio.toISOString().slice(0, 10);
-
-  if (inicio < hoyArgentina) {
+  if (input.fechaInicio < hoy) {
     throw new BadRequestError('La fecha de inicio no puede ser anterior a hoy.');
   }
 
