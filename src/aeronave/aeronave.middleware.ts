@@ -4,7 +4,7 @@ import { CreateAeronaveDTO } from './createAeronave.dto.js';
 import { FilterAeronaveDTO } from './filterAeronave.dto.js';
 
 // SI NO SE MANDA NADA SE ACTUALIZA EXITOSAMENTE IGUAL, SI SE MANDA CUALQUIER OTRO CAMPO TAMBIEN
-//FALTA VALIDAR ESO
+//FALTA ver validacion antiguedad capacidad velocidad
 
 export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
   const {
@@ -15,7 +15,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     autonomia,
     velocidadMaxima,
     antiguedad,
-    proveedor,
+    //proveedor,
     ultimoAeropuerto,
   } = req.body;
 
@@ -28,7 +28,7 @@ export function sanitizeInput(req: Request, res: Response, next: NextFunction) {
     autonomia: autonomia !== undefined ? Number(autonomia) : undefined,
     velocidadMaxima: velocidadMaxima !== undefined ? Number(velocidadMaxima) : undefined,
     antiguedad: antiguedad ? new Date(antiguedad) : undefined,
-    proveedor: proveedor !== undefined ? Number(proveedor) : undefined,
+    //proveedor: res.locals.usuario?.id,
     ultimoAeropuerto: ultimoAeropuerto !== undefined ? Number(ultimoAeropuerto) : undefined,
   };
   // limpiar claves que hayan quedado undefined O VACIAS
@@ -62,7 +62,6 @@ export function validarCrearDatos(req: Request, res: Response, next: NextFunctio
     'autonomia',
     'velocidadMaxima',
     'antiguedad',
-    'proveedor',
     'ultimoAeropuerto',
   ];
   for (const campo of camposObligatorios) {

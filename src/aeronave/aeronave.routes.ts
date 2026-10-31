@@ -17,6 +17,7 @@ aeronaveRouter.get(
   md.sanitizeFiltros,
   c.getMisAeronaves
 );
+/*
 aeronaveRouter.get(
   // dejo por compatibilidad
   '/proveedor/:id',
@@ -25,6 +26,7 @@ aeronaveRouter.get(
   md.sanitizeFiltros,
   c.getByProveedor
 );
+*/
 aeronaveRouter.get('/aeropuerto/:id', c.getByAirport);
 
 // CRUD

@@ -17,7 +17,7 @@ export class ReservaService {
   ) {}
   findAll = async (filtros: FilterReservaDTO, usuarioID: number, rol: RolUsuario) => {
     const { estado, cliente, publicacion } = filtros;
-
+    //sacaria cliente de filtros
     const where: FilterQuery<Reserva> = {};
 
     if (estado) where.estado = estado;

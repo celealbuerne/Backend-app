@@ -53,16 +53,13 @@ export class AeronaveService {
   };
 
   //se agrego para poder identificar aeronaves del proveedor al crear una publicacion
-  saveOne = async (input: CreateAeronaveDTO) => {
-    const proveedor = await orm.em.findOne(Usuario, { id: input.proveedor });
-    if (!proveedor) {
-      throw new BadRequestError('El proveedor ingresado no existe.');
-    }
+  saveOne = async (input: CreateAeronaveDTO, proveedorId: number) => {
     const aeropuerto = await orm.em.findOne(Aeropuerto, { id: input.ultimoAeropuerto });
     if (!aeropuerto) {
       throw new BadRequestError('El aeropuerto ingresado no existe.');
     }
-    const nuevaAeronave = orm.em.create(Aeronave, input as RequiredEntityData<Aeronave>);
+
+    const nuevaAeronave = orm.em.create(Aeronave, { ...input, proveedor: proveedorId } as RequiredEntityData<Aeronave>);
     await orm.em.flush();
     return nuevaAeronave;
   };

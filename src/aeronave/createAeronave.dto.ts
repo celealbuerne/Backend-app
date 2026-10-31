@@ -6,6 +6,6 @@ export interface CreateAeronaveDTO {
   autonomia: number;
   velocidadMaxima: number;
   antiguedad: Date;
-  proveedor: number;
+  //proveedor: number;  del token
   ultimoAeropuerto: number;
 }

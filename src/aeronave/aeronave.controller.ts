@@ -35,22 +35,24 @@ export class AeronaveController {
     }
   };
 
-  getByProveedor = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const proveedorID = Number(req.params.id);
-      if (!Number.isInteger(proveedorID) || proveedorID <= 0) {
-        throw new NotFoundIDError();
+  /*
+    getByProveedor = async (req: Request, res: Response, next: NextFunction) => {
+      try {
+        const proveedorID = Number(req.params.id);
+        if (!Number.isInteger(proveedorID) || proveedorID <= 0) {
+          throw new NotFoundIDError();
+        }
+        const filtros = res.locals.filtros;
+        const aeronaves = await this.s.getByProveedor(proveedorID, filtros);
+        res.status(200).json({
+          mensaje: 'aeronaves del proveedor',
+          data: aeronaves,
+        });
+      } catch (error) {
+        next(error);
       }
-      const filtros = res.locals.filtros;
-      const aeronaves = await this.s.getByProveedor(proveedorID, filtros);
-      res.status(200).json({
-        mensaje: 'aeronaves del proveedor',
-        data: aeronaves,
-      });
-    } catch (error) {
-      next(error);
     }
-  };
+  */
 
   getOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -68,8 +70,9 @@ export class AeronaveController {
 
   saveOne = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const nuevaAeronave = await this.s.saveOne(req.body.sanitizedInput);
-
+      const input = req.body.sanitizedInput;
+      const nuevaAeronave = await this.s.saveOne(input, req.user.id);
+      
       res.status(201).json({
         mensaje: 'aeronave creada exitosamente',
         data: nuevaAeronave,
