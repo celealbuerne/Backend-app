@@ -3,9 +3,10 @@ import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { Aeronave } from './aeronave.entity.js';
 import { CreateAeronaveDTO } from './createAeronave.dto.js';
 import { FilterAeronaveDTO } from './filterAeronave.dto.js';
-import { Usuario } from '../usuario/usuario.entity.js';
+import { RolUsuario } from '../usuario/usuario.entity.js';
 import { Aeropuerto } from '../aeropuerto/aeropuerto.entity.js';
 import { orm } from '../shared/db/orm.js';
+import { ForbiddenError } from '../shared/errors/forbidden.error.js';
 
 export class AeronaveService {
   findAll = async (filtros?: FilterAeronaveDTO) => {
@@ -64,15 +65,26 @@ export class AeronaveService {
     return nuevaAeronave;
   };
 
-  updateOne = async (id: number, input: EntityData<Aeronave>) => {
+  updateOne = async (
+    id: number,
+    input: EntityData<Aeronave>,
+    usuarioID: number,
+    roles: RolUsuario[]
+  ) => {
     const aeronave = await orm.em.findOneOrFail(Aeronave, { id });
+    if (aeronave.proveedor.id !== usuarioID && !roles.includes(RolUsuario.ADMIN)) {
+      throw new ForbiddenError('No tenés permiso para modificar esta aeronave');
+    }
     orm.em.assign(aeronave, input);
     await orm.em.flush();
     return aeronave;
   };
 
-  removeOne = async (id: number) => {
+  removeOne = async (id: number, usuarioID: number, roles: RolUsuario[]) => {
     const aeronave = await orm.em.findOneOrFail(Aeronave, { id });
+    if (aeronave.proveedor.id !== usuarioID && !roles.includes(RolUsuario.ADMIN)) {
+      throw new ForbiddenError('No tenés permiso para eliminar esta aeronave');
+    }
     orm.em.remove(aeronave);
     await orm.em.flush();
     return;

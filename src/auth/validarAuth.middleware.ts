@@ -5,7 +5,7 @@ import { RolUsuario } from '../usuario/usuario.entity.js';
 
 //SE ENCARGA DE REVISAR LOS DATOS DE REGISTRO Y LOGIN
 
-const ROLES_PERMITIDOS_EN_REGISTRO = [RolUsuario.CLIENTE, RolUsuario.PROVEEDOR, RolUsuario.ADMIN];
+const ROLES_PERMITIDOS_EN_REGISTRO = [RolUsuario.CLIENTE, RolUsuario.PROVEEDOR /*, RolUsuario.ADMIN*/ ];
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/; //regex para validar fechas en formato ISO
 
@@ -47,7 +47,7 @@ export function sanitizedInput(req: Request, res: Response, next: NextFunction) 
     pais: pais !== undefined ? String(pais).trim() : undefined,
     fechaNacimiento: fechaNacimiento !== undefined ? new Date(fechaNacimiento) : undefined,
     tipoDocumento: tipoDocumento !== undefined ? String(tipoDocumento).trim() : undefined,
-    documento: documento !== undefined ? String(documento).trim() : undefined,
+    documento: documento !== undefined ? Number(String(documento).trim()) : undefined,
     contraseña: contraseña !== undefined ? String(contraseña) : undefined, // sin trim
     rol: rol !== undefined ? rol : undefined,
     contacto: sc,
@@ -75,6 +75,13 @@ export function sanitizedInput(req: Request, res: Response, next: NextFunction) 
     !ROLES_PERMITIDOS_EN_REGISTRO.includes(sanitizedInput.rol)
   ) {
     throw new BadRequestError('El rol ingresado no es válido.');
+  }
+
+  if (
+    sanitizedInput.documento !== undefined &&
+    (!Number.isInteger(sanitizedInput.documento) || sanitizedInput.documento <= 0)
+  ) {
+    throw new BadRequestError('El número de documento ingresado no es válido.');
   }
 
   req.body.sanitizedInput = sanitizedInput;

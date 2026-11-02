@@ -54,7 +54,13 @@ export class PublicacionController {
       if (!Number.isInteger(id) || id <= 0) throw new NotFoundIDError();
       const input = req.body.sanitizedInput;
       const imagen = req.file?.filename;
-      const publicacion = await this.s.updateOne(id, input, imagen);
+      const publicacion = await this.s.updateOne(
+        id,
+        input,
+        req.user.id,
+        req.user.roles,
+        imagen
+      );
       res.status(200).json({
         mensaje: 'Publicacion actualizada exitosamente',
         data: publicacion,
@@ -68,7 +74,7 @@ export class PublicacionController {
     try {
       const id = Number(req.params.id); //cambiar por user y revisar en el front
       if (!Number.isInteger(id) || id <= 0) throw new NotFoundIDError();
-      const publicacion = await this.s.removeOne(id);
+      const publicacion = await this.s.removeOne(id, req.user.id, req.user.roles);
       res.status(200).json({
         mensaje: 'Publicacion eliminada exitosamente',
         data: publicacion,

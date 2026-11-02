@@ -12,7 +12,7 @@ export class ReservaController {
   findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const filtros = res.locals.filtros ?? {};
-      const reservas = await this.s.findAll(filtros, req.user.id, req.user.rol);
+      const reservas = await this.s.findAll(filtros, req.user.id, req.user.roles);
       res.status(200).json({
         mensaje: 'Reservas encontradas',
         data: reservas,
@@ -28,7 +28,7 @@ export class ReservaController {
       if (!Number.isInteger(id) || id <= 0) {
         throw new BadRequestError('El ID de la reserva ingresado no es válido.');
       }
-      const reserva = await this.s.getOne(id, req.user.id);
+      const reserva = await this.s.getOne(id, req.user.id, req.user.roles);
       res.status(200).json({
         mensaje: 'Reserva encontrada',
         data: reserva,

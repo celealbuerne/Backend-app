@@ -89,7 +89,12 @@ export class AeronaveController {
         throw new NotFoundIDError();
       }
 
-      const aeronave = await this.s.updateOne(id, req.body.sanitizedInput);
+      const aeronave = await this.s.updateOne(
+        id,
+        req.body.sanitizedInput,
+        req.user.id,
+        req.user.roles
+      );
 
       res.status(200).json({
         message: 'aeronave actualizada',
@@ -108,7 +113,7 @@ export class AeronaveController {
         throw new NotFoundIDError();
       }
 
-      await this.s.removeOne(id);
+      await this.s.removeOne(id, req.user.id, req.user.roles);
 
       res.status(200).json({ mensaje: 'la aeronave ha sido eliminada correctamente' });
     } catch (error) {

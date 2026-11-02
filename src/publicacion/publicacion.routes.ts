@@ -37,6 +37,8 @@ publicacionRouter.get('/:id/disponibilidad', publicacionController.getDisponibil
 publicacionRouter.get('/:id', publicacionController.getOne);
 publicacionRouter.put(
   '/:id',
+  verificarToken,
+  verificarRol(RolUsuario.PROVEEDOR),
   uploadImagenPublicacion.single('imagen'),
   md.sanitizeInput,
   md.validarCrearPublicacion,
@@ -44,11 +46,18 @@ publicacionRouter.put(
 );
 publicacionRouter.patch(
   '/:id',
+  verificarToken,
+  verificarRol(RolUsuario.PROVEEDOR),
   uploadImagenPublicacion.single('imagen'),
   md.sanitizeInput,
   md.validarActualizarDatos,
   publicacionController.updateOne
 );
-publicacionRouter.delete('/:id', publicacionController.removeOne);
+publicacionRouter.delete(
+  '/:id',
+  verificarToken,
+  verificarRol(RolUsuario.PROVEEDOR),
+  publicacionController.removeOne
+);
 
 export default publicacionRouter;

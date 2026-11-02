@@ -15,7 +15,8 @@ export class ReservaService {
     private publicacionService: PublicacionService = new PublicacionService(),
     private aeropuertoService: AeropuertoService = new AeropuertoService()
   ) {}
-  findAll = async (filtros: FilterReservaDTO, usuarioID: number, rol: RolUsuario) => {
+
+  findAll = async (filtros: FilterReservaDTO, usuarioID: number, roles: RolUsuario[]) => {
     const { estado, cliente, publicacion } = filtros;
     //sacaria cliente de filtros
     const where: FilterQuery<Reserva> = {};
@@ -24,9 +25,9 @@ export class ReservaService {
     if (cliente !== undefined) where.cliente = cliente;
     if (publicacion !== undefined) where.publicacion = publicacion;
 
-    if (rol === RolUsuario.CLIENTE) {
+    if (roles.includes(RolUsuario.CLIENTE)) {
       where.cliente = usuarioID;
-    } else if (rol === RolUsuario.PROVEEDOR) {
+    } else if (roles.includes(RolUsuario.PROVEEDOR)) {
       // filtra por proveedor a través de la publicación
       where.publicacion = { proveedor: usuarioID };
     }
@@ -44,7 +45,7 @@ export class ReservaService {
     return reservas;
   };
 
-  getOne = async (id: number, usuarioID: number) => {
+  getOne = async (id: number, usuarioID: number, roles: RolUsuario[]) => {
     const reserva = await orm.em.findOne(
       Reserva,
       { id },
@@ -65,7 +66,8 @@ export class ReservaService {
 
     const esCliente = reserva.cliente.id === usuarioID;
     const esProveedor = reserva.publicacion.proveedor.id === usuarioID;
-    if (!esCliente && !esProveedor) {
+    const esAdmin = roles.includes(RolUsuario.ADMIN);
+    if (!esCliente && !esProveedor && !esAdmin) {
       throw new ForbiddenError('No tenés permiso para ver esta reserva');
     }
     return reserva;

@@ -5,8 +5,10 @@ import { CreatePublicacionDTO, UpdatePublicacionDTO } from './publicacion.dto.js
 import { FilterPublicacionDTO } from './filterPublicacion.dto.js';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { NotFoundIDError } from '../shared/errors/notFound.error.js';
+import { ForbiddenError } from '../shared/errors/forbidden.error.js';
 import { Aeronave } from '../aeronave/aeronave.entity.js';
 import { Reserva, EstadoReserva } from '../reserva/reserva.entity.js';
+import { RolUsuario } from '../usuario/usuario.entity.js';
 
 // const LIMITE_POR_DEFECTO = 10;
 
@@ -61,7 +63,7 @@ export class PublicacionService {
     if (!aeronave) {
       throw new BadRequestError('La aeronave ingresada no existe.');
     }
-    if (aeronave.proveedor.id !== proveedorID) {
+    if (aeronave.proveedor.id !== proveedorID) { // si la aeronave pertenece al proveedor logeado, su publicación tambien
       throw new BadRequestError('La aeronave no pertenece al proveedor.');
     }
     if (aeronave.publicacion) {
@@ -80,9 +82,19 @@ export class PublicacionService {
     return nuevaPublicacion;
   };
 
-  updateOne = async (id: number, input: UpdatePublicacionDTO, imagen?: string) => {
+  updateOne = async (
+    id: number,
+    input: UpdatePublicacionDTO,
+    usuarioID: number,
+    roles: RolUsuario[],
+    imagen?: string
+  ) => {
     const publicacion = await orm.em.findOne(Publicacion, { id });
     if (!publicacion) throw new BadRequestError('La publicacion ingresada no existe');
+
+    if (publicacion.proveedor.id !== usuarioID && !roles.includes(RolUsuario.ADMIN)) {
+      throw new ForbiddenError('No tenés permiso para modificar esta publicación');
+    }
 
     orm.em.assign(publicacion, input as EntityData<Publicacion>);
     if (imagen !== undefined) {
@@ -92,9 +104,13 @@ export class PublicacionService {
     return publicacion;
   };
 
-  removeOne = async (id: number) => {
+  removeOne = async (id: number, usuarioID: number, roles: RolUsuario[]) => {
     const publicacion = await orm.em.findOne(Publicacion, { id });
     if (!publicacion) throw new BadRequestError('La publicacion ingresada no existe');
+
+    if (publicacion.proveedor.id !== usuarioID && !roles.includes(RolUsuario.ADMIN)) {
+      throw new ForbiddenError('No tenés permiso para eliminar esta publicación');
+    }
 
     const reservasActivas = await orm.em.find(Reserva, {
       publicacion: { id },
