@@ -13,7 +13,7 @@ export class Localidad extends BaseEntity {
   @Property()
   nombre: string;
 
-  @Property()
+  @Property({ unique: true })
   codigoPostal: number;
 
   @OneToMany({ mappedBy: 'localidadID' })

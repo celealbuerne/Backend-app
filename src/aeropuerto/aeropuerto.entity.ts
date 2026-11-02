@@ -9,7 +9,7 @@ export class Aeropuerto extends BaseEntity {
   @Property()
   nombre: string;
 
-  @Property()
+  @Property({ unique: true })
   codigo: string;
 
   @ManyToOne()

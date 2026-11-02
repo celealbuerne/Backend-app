@@ -21,12 +21,12 @@ POST http://localhost:3000/api/auth/register
 Content-Type: application/json
 
 {
-  "nombre": "todos",
-  "nombreUsuario": "cli@cliente.com",
+  "nombre": "admin",
+  "nombreUsuario": "admin",
   "pais": "Argentina",
   "fechaNacimiento": "1971-04-25",
   "tipoDocumento": "DNI",
   "documento": 22726100,
-  "contraseña": "123456",
-  "rol": "CLIENTE"
+  "contraseña": "admin123",
+  "rol": "ADMIN"
 }

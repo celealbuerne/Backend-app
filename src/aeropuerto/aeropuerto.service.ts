@@ -45,6 +45,11 @@ export class AeropuertoService {
   };
 
   saveOne = async (input: CreateAeropuertoDTO) => {
+    const codigoExistente = await orm.em.findOne(Aeropuerto, { codigo: input.codigo });
+    if (codigoExistente) {
+      throw new BadRequestError('El código de aeropuerto ingresado ya está en uso.');
+    }
+
     const localidad = await orm.em.findOne(Localidad, { id: input.localidadID });
     if (!localidad) {
       throw new BadRequestError('La localidad ingresada no existe.');
@@ -64,6 +69,14 @@ export class AeropuertoService {
     if (!aeropuerto) {
       throw new BadRequestError('El aeropuerto ingresado no existe.');
     }
+
+    if (input.codigo && input.codigo !== aeropuerto.codigo) {
+      const codigoExistente = await orm.em.findOne(Aeropuerto, { codigo: input.codigo });
+      if (codigoExistente) {
+        throw new BadRequestError('El código de aeropuerto ingresado ya está en uso.');
+      }
+    }
+
     orm.em.assign(aeropuerto, input);
     await orm.em.flush();
     return aeropuerto;
