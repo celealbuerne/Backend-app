@@ -41,25 +41,4 @@ export class Reserva extends BaseEntity {
 
   // @OneToOne()
   // pago: Pago;
-
-  constructor(
-    _destino: Aeropuerto,
-    _origen: Aeropuerto,
-    _montoTotal: number,
-    _estado: EstadoReserva,
-    _cliente: Usuario,
-    _publicacion: Publicacion,
-    _fechaInicio: Date,
-    _fechaFin: Date
-  ) {
-    super();
-    this.origen = _origen;
-    this.destino = _destino;
-    this.montoTotal = _montoTotal;
-    this.estado = _estado;
-    this.cliente = _cliente;
-    this.publicacion = _publicacion;
-    this.fechaInicio = _fechaInicio;
-    this.fechaFin = _fechaFin;
-  }
 }

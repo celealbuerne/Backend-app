@@ -36,31 +36,6 @@ export class Aeronave extends BaseEntity {
   @ManyToOne(() => Aeropuerto, { inversedBy: 'aeronavesAlojadas' })
   ultimoAeropuerto: Aeropuerto;
 
-  constructor(
-    _modelo: string,
-    _fabricante: string,
-    _capacidad: number,
-    _autonomia: number,
-    _velocidadMaxima: number,
-    _antiguedad: Date,
-    proveedor: Usuario,
-    _aeropuertoActual: Aeropuerto,
-    _descripcion: string = ''
-  ) {
-    super();
-    this.modelo = _modelo;
-    this.fabricante = _fabricante;
-    this.capacidad = _capacidad;
-    this.autonomia = _autonomia;
-    this.velocidadMaxima = _velocidadMaxima;
-    this.antiguedad = _antiguedad;
-    this.proveedor = proveedor;
-    this.ultimoAeropuerto = _aeropuertoActual;
-    if (_descripcion) {
-      this.descripcion = _descripcion;
-    }
-  }
-
   // Revisar en el MD
   // @Property()
   // tipo!: TipoAeronave;

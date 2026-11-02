@@ -23,11 +23,4 @@ export class Aeropuerto extends BaseEntity {
 
   @OneToMany({ mappedBy: 'ultimoAeropuerto' })
   aeronavesAlojadas = new Collection<Aeronave>(this);
-
-  constructor(_nombre: string, _codigo: string, _localidadID: Localidad) {
-    super();
-    this.nombre = _nombre;
-    this.codigo = _codigo;
-    this.localidadID = _localidadID;
-  }
 }

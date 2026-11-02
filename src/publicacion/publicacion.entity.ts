@@ -23,19 +23,4 @@ export class Publicacion extends BaseEntity {
 
   @ManyToOne(() => Usuario)
   proveedor: Usuario;
-
-  constructor(
-    _descripcion: string,
-    _precioPorDia: number,
-    _imagen: string,
-    aeronave: Aeronave,
-    proveedor: Usuario
-  ) {
-    super();
-    this.descripcion = _descripcion;
-    this.precioPorDia = _precioPorDia;
-    this.imagen = _imagen;
-    this.aeronave = aeronave;
-    this.proveedor = proveedor;
-  }
 }

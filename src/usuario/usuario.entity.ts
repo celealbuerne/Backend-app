@@ -57,22 +57,6 @@ export class Usuario extends BaseEntity<'aeronaves' | 'estado' | 'roles' | 'cont
   @OneToMany({ mappedBy: 'proveedor' })
   publicaciones = new Collection<Publicacion>(this);
 
-  constructor(
-    _nombre: string,
-    _pais: string,
-    _tipoDocumento: string,
-    _documento: number,
-    _fechaNacimiento: Date
-  ) {
-    super();
-    this.nombre = _nombre;
-    this.nombreUsuario = _nombre;
-    this.pais = _pais;
-    this.tipoDocumento = _tipoDocumento;
-    this.documento = _documento;
-    this.fechaNacimiento = _fechaNacimiento;
-  }
-
   getCantidadContactos(): number {
     return this.contacto.length;
   }

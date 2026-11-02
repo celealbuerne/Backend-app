@@ -18,12 +18,4 @@ export class Localidad extends BaseEntity {
 
   @OneToMany({ mappedBy: 'localidadID' })
   aeropuertos = new Collection<Aeropuerto>(this);
-
-  constructor(_pais: string, _provincia: string, _nombre: string, _codigoPostal: number) {
-    super();
-    this.pais = _pais;
-    this.provincia = _provincia;
-    this.nombre = _nombre;
-    this.codigoPostal = _codigoPostal;
-  }
 }
