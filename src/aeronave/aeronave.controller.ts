@@ -72,7 +72,7 @@ export class AeronaveController {
     try {
       const input = req.body.sanitizedInput;
       const nuevaAeronave = await this.s.saveOne(input, req.user.id);
-      
+
       res.status(201).json({
         mensaje: 'aeronave creada exitosamente',
         data: nuevaAeronave,

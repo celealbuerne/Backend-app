@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { BadRequestError } from '../shared/errors/badRequest.error.js';
 import { CreateReservaDTO, updateEstadoReservaDTO } from './reserva.dto.js';
-import { FilterReservaDTO } from './filterReserva.dto.js'; 
+import { FilterReservaDTO } from './filterReserva.dto.js';
 import { EstadoReserva } from './reserva.entity.js';
 
 function parsearFechaSoloDia(valor: unknown): Date | undefined {

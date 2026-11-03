@@ -5,7 +5,10 @@ import { RolUsuario } from '../usuario/usuario.entity.js';
 
 //SE ENCARGA DE REVISAR LOS DATOS DE REGISTRO Y LOGIN
 
-const ROLES_PERMITIDOS_EN_REGISTRO = [RolUsuario.CLIENTE, RolUsuario.PROVEEDOR /*, RolUsuario.ADMIN*/ ];
+const ROLES_PERMITIDOS_EN_REGISTRO = [
+  RolUsuario.CLIENTE,
+  RolUsuario.PROVEEDOR /*, RolUsuario.ADMIN*/,
+];
 
 const ISO_DATE_REGEX = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?)?$/; //regex para validar fechas en formato ISO
 

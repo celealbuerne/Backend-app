@@ -13,25 +13,33 @@ aeropuertoRouter.get('/', md.sanitizeFiltros, aeropuertoController.findAll);
 aeropuertoRouter.get('/:id', aeropuertoController.findOne);
 aeropuertoRouter.post(
   '/',
-  verificarToken, verificarRol(RolUsuario.ADMIN), md.sanitizeInput,
+  verificarToken,
+  verificarRol(RolUsuario.ADMIN),
+  md.sanitizeInput,
   md.validarCrearDatos,
   aeropuertoController.saveOne
 );
 aeropuertoRouter.put(
   '/:id',
-  verificarToken, verificarRol(RolUsuario.ADMIN), md.sanitizeInput,
+  verificarToken,
+  verificarRol(RolUsuario.ADMIN),
+  md.sanitizeInput,
   md.validarCrearDatos,
   aeropuertoController.updateOne
 );
 aeropuertoRouter.patch(
   '/:id',
-  verificarToken, verificarRol(RolUsuario.ADMIN), md.sanitizeInput,
+  verificarToken,
+  verificarRol(RolUsuario.ADMIN),
+  md.sanitizeInput,
   md.validarActualizarDatos,
   aeropuertoController.updateOne
 );
 aeropuertoRouter.delete(
   '/:id',
-  verificarToken, verificarRol(RolUsuario.ADMIN), aeropuertoController.removeOne
+  verificarToken,
+  verificarRol(RolUsuario.ADMIN),
+  aeropuertoController.removeOne
 );
 
 export default aeropuertoRouter;

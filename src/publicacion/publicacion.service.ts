@@ -63,7 +63,8 @@ export class PublicacionService {
     if (!aeronave) {
       throw new BadRequestError('La aeronave ingresada no existe.');
     }
-    if (aeronave.proveedor.id !== proveedorID) { // si la aeronave pertenece al proveedor logeado, su publicación tambien
+    if (aeronave.proveedor.id !== proveedorID) {
+      // si la aeronave pertenece al proveedor logeado, su publicación tambien
       throw new BadRequestError('La aeronave no pertenece al proveedor.');
     }
     if (aeronave.publicacion) {
@@ -188,7 +189,7 @@ export class PublicacionService {
     });
     if (solapadas > 0) {
       throw new BadRequestError('No se puede reservar en esas fechas.');
-      }
+    }
     /*
     if (solapadas > 0) {
       throw new BadRequestError(String(solapadas));

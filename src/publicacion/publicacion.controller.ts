@@ -54,13 +54,7 @@ export class PublicacionController {
       if (!Number.isInteger(id) || id <= 0) throw new NotFoundIDError();
       const input = req.body.sanitizedInput;
       const imagen = req.file?.filename;
-      const publicacion = await this.s.updateOne(
-        id,
-        input,
-        req.user.id,
-        req.user.roles,
-        imagen
-      );
+      const publicacion = await this.s.updateOne(id, input, req.user.id, req.user.roles, imagen);
       res.status(200).json({
         mensaje: 'Publicacion actualizada exitosamente',
         data: publicacion,

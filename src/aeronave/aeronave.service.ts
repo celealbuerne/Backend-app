@@ -60,7 +60,10 @@ export class AeronaveService {
       throw new BadRequestError('El aeropuerto ingresado no existe.');
     }
 
-    const nuevaAeronave = orm.em.create(Aeronave, { ...input, proveedor: proveedorId } as RequiredEntityData<Aeronave>);
+    const nuevaAeronave = orm.em.create(Aeronave, {
+      ...input,
+      proveedor: proveedorId,
+    } as RequiredEntityData<Aeronave>);
     await orm.em.flush();
     return nuevaAeronave;
   };
